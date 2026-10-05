@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Numerify — Calculate Smart, Shop Smart!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#FFF9EC; --surface:#FFFFFF; --ink:#20283A; --muted:#566086; --line:#D8DDF1;
+  --tag:#FFD43B; --tag-ink:#3A2F00; --sale:#E5313F; --mint:#0E9B77; --sky:#4F6BF5;
+  --card1:#DAE2FF; --card2:#FFE680; --card3:#BDEFDD;
+  --ok:#0E8F6D; --bad:#D12A38;
+  --shadow:0 1px 0 rgba(20,24,58,.06),0 18px 34px -22px rgba(20,24,58,.45);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#394255; --surface:#4A556A; --ink:#FFF9EC; --muted:#D6DCE8; --line:#667188;
+  --tag:#FFD43B; --tag-ink:#3A2F00; --sale:#FF6670; --mint:#54D9B3; --sky:#9BAEFF;
+  --card1:#505B87; --card2:#675D35; --card3:#35675C; --ok:#54D9B3; --bad:#FF8991;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 18px 34px -22px rgba(0,0,0,.45);
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 110px);scroll-behavior:smooth;background:var(--bg)}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.05;letter-spacing:-.025em;font-weight:800}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sky);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+
+/* header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-bottom:2px dashed var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.35rem;letter-spacing:-.03em;color:var(--ink);text-decoration:none}
+.nav{display:flex;gap:4px;margin-left:12px;overflow-x:auto;scrollbar-width:none}
+.nav a{padding:8px 14px;border-radius:999px;color:var(--ink);text-decoration:none;font-weight:600;white-space:nowrap}
+.nav a:hover{background:var(--surface)}
+.top-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.chip{background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.9rem;white-space:nowrap}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:1.1rem}
+.icon-btn:hover{border-color:var(--ink)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:14px;border:2px solid var(--ink);background:var(--tag);color:var(--tag-ink);font-weight:800;box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;text-decoration:none}
+.btn:hover{transform:translateY(-1px);box-shadow:0 5px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.alt{background:var(--surface);color:var(--ink)}
+.btn.small{padding:8px 14px;border-radius:11px;font-size:.92rem;box-shadow:0 3px 0 var(--ink)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none;box-shadow:0 2px 0 var(--ink)}
+
+/* hero */
+.hero{padding:56px 0 40px}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+.hero h1{font-size:clamp(2.5rem,6.2vw,4.8rem);font-variation-settings:"opsz" 96;max-width:11ch}
+.hero .lead{margin-top:22px;font-size:1.2rem;color:var(--muted);max-width:34em}
+.hero .cta{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap}
+.tagline{margin-top:26px;font-weight:700;display:inline-flex;gap:10px;align-items:center;background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:8px 14px}
+.tag-wrap{filter:drop-shadow(0 22px 22px rgba(20,24,58,.28));transform:rotate(-2.5deg)}
+.tag{position:relative;background:var(--tag);color:var(--tag-ink);padding:28px 74px 28px 28px;border-radius:26px 0 0 26px;clip-path:polygon(0 0,calc(100% - 56px) 0,100% 50%,calc(100% - 56px) 100%,0 100%)}
+.tag::after{content:"";position:absolute;right:36px;top:50%;width:18px;height:18px;border-radius:50%;background:var(--bg);transform:translateY(-50%)}
+.tag .off{font-size:clamp(3.6rem,9vw,5.6rem);font-weight:800;line-height:.9;letter-spacing:-.05em}
+.tag .off small{font-size:.35em;letter-spacing:0;margin-left:4px}
+.tag .item{font-weight:700;font-size:1.05rem;margin-top:6px}
+.tag .was{text-decoration:line-through;text-decoration-thickness:3px;font-size:1.5rem;font-weight:700;margin-top:6px}
+.fakeclock{margin-top:14px;display:inline-flex;gap:8px;align-items:center;background:var(--sale);color:#fff;font-weight:800;padding:6px 12px;border-radius:8px;font-size:.95rem}
+.guess{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.guess input{flex:1 1 150px;min-width:0;padding:12px 14px;border:2px solid var(--tag-ink);border-radius:12px;background:#fff;color:#14183A;font-weight:700;font-size:1.05rem}
+.guess .btn{background:var(--tag-ink);color:var(--tag);border-color:var(--tag-ink);box-shadow:none;padding:10px 16px}
+.guess-msg{margin-top:10px;font-weight:700;min-height:1.5em;font-size:.98rem}
+.tag-note{margin-top:14px;text-align:center;color:var(--muted);font-size:.92rem;transform:rotate(2.5deg)}
+
+/* sections */
+section.block{padding:64px 0}
+.sec-head{max-width:40em;margin-bottom:32px}
+.sec-head h2{font-size:clamp(2rem,4.5vw,3.2rem)}
+.sec-head p{margin-top:12px;color:var(--muted);font-size:1.12rem}
+
+/* game cards */
+.games{display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:auto auto;gap:20px}
+.gcard{position:relative;border:2px solid var(--ink);padding:26px;display:flex;flex-direction:column;gap:12px;overflow:hidden;box-shadow:0 6px 0 var(--ink)}
+.gcard h3{font-size:1.75rem}
+.gcard p{max-width:30em}
+.gcard .meta{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.gcard .best{font-weight:700;font-size:.95rem}
+.gcard .skills{display:flex;gap:6px;flex-wrap:wrap}
+.skills span{background:color-mix(in srgb,var(--ink) 10%,transparent);padding:3px 10px;border-radius:999px;font-size:.82rem;font-weight:700}
+.g1{grid-column:1/4;grid-row:1/3;background:var(--card1);border-radius:40px 40px 150px 40px;min-height:430px}
+.g2{grid-column:4/7;background:var(--card2);border-radius:40px 12px 40px 12px}
+.g3{grid-column:4/7;background:var(--card3);border-radius:12px 40px 12px 40px}
+.g1 .scene{position:absolute;right:20px;top:20px;width:48%;height:210px;pointer-events:none}
+.g1 h3{font-size:2.3rem;margin-top:150px}
+.scene .pill{position:absolute;background:var(--tag);color:var(--tag-ink);border:2px solid var(--ink);border-radius:10px;padding:2px 10px;font-weight:800;font-size:.95rem}
+.scene .cart{position:absolute;left:0;top:70px;font-size:3.4rem;transform:rotate(-14deg)}
+.scene .bar{position:absolute;right:6px;width:18%;background:var(--sale);border:2px solid var(--ink)}
+
+/* toolkit */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tabs button{padding:10px 18px;border-radius:999px;border:2px solid var(--line);background:var(--surface);font-weight:700}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel{background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:26px;box-shadow:var(--shadow)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;font-weight:700;font-size:.9rem;margin-bottom:4px}
+.field input,.field select{width:100%;padding:11px 12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);font-weight:600}
+.field input:focus,.field select:focus{border-color:var(--sky);outline:none}
+.field.wide{grid-column:1/-1}
+.hint{color:var(--muted);font-size:.9rem;margin-top:6px}
+.receipt{background:var(--tag);color:var(--tag-ink);padding:24px 22px 40px;-webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/20px 100%;mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/20px 100%}
+.receipt h4{font-size:1.15rem;margin-bottom:12px;border-bottom:2px dashed var(--tag-ink);padding-bottom:10px}
+.rrow{display:flex;justify-content:space-between;gap:14px;padding:5px 0;font-weight:600}
+.rrow.neg span:last-child{color:#0B6B4F}
+.rrow.warn{color:#8A1620}
+.rrow.total{border-top:2px dashed var(--tag-ink);margin-top:10px;padding-top:12px;font-size:1.4rem;font-weight:800}
+.rnote{margin-top:12px;font-size:.92rem;font-weight:600}
+.est{margin-top:16px;padding:14px;background:var(--bg);border-radius:14px;border:2px dashed var(--line);font-weight:600}
+.verdict{margin-top:18px;padding:16px 18px;border-radius:16px;font-weight:700;border:2px solid var(--ink);background:var(--card2)}
+.offer{background:var(--bg);border:2px solid var(--line);border-radius:20px;padding:18px}
+.offer h4{margin-bottom:12px;font-size:1.25rem}
+.offer .out{margin-top:14px;padding-top:12px;border-top:2px dashed var(--line);font-weight:600}
+.offer .real{font-size:1.7rem;font-weight:800}
+.offer.win{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--bg))}
+.flags{margin:10px 0 0;padding-left:20px;color:var(--muted);font-size:.93rem}
+.flags li{margin:3px 0}
+.daily-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.daily-card{background:var(--surface);border:2px solid var(--ink);border-radius:8px;padding:18px;box-shadow:0 5px 0 var(--ink);display:flex;flex-direction:column;gap:12px;min-width:0;min-height:285px}
+.daily-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.daily-number{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:var(--tag);border:2px solid var(--ink);font-weight:800}
+.daily-skill{background:var(--card3);border-radius:999px;padding:4px 12px;font-weight:700;font-size:.82rem}
+.daily-question{font-weight:700;line-height:1.45}
+.daily-answer{display:flex;gap:8px;margin-top:auto}
+.daily-answer input{flex:1;min-width:0;padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);font-weight:700}
+.daily-feedback{min-height:3em;font-size:.9rem;font-weight:600;color:var(--muted)}
+.daily-card.solved{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 7%,var(--surface))}
+.daily-status{margin:-12px 0 20px;padding:12px 16px;background:var(--card2);border-radius:8px;font-weight:800}
+.trick-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.trick-card{background:var(--surface);border:2px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.trick-icon{font-size:1.8rem;line-height:1}
+.trick-card h3{font-size:1.18rem;line-height:1.15}
+.trick-card p{color:var(--muted);font-size:.94rem;line-height:1.4}
+.trick-tell{background:var(--card2);color:var(--ink)!important;border-radius:8px;padding:10px;font-weight:700}
+.trick-tell b{display:block;font-size:.78rem;margin-bottom:2px}
+.trick-card .btn{align-self:flex-start;margin-top:auto}
+
+/* mentor */
+.mentor{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.casebox{background:var(--surface);border:2px solid var(--ink);border-radius:28px 28px 28px 8px;padding:26px;box-shadow:0 6px 0 var(--ink)}
+.casebox .q{font-size:1.28rem;font-weight:700;line-height:1.35;margin:12px 0 18px}
+.skill-chip{display:inline-block;background:var(--card3);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.85rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row input[type=text],.row input[type=number],.row input:not([type]){flex:1 1 160px;min-width:0;padding:12px 14px;border:2px solid var(--line);border-radius:12px;background:var(--bg);font-weight:700;font-size:1.05rem}
+.steps{margin:10px 0 0;padding-left:20px;font-weight:600}
+.chat{background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:18px;display:flex;flex-direction:column;min-height:420px;box-shadow:var(--shadow)}
+.chat-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:2px 6px 12px;border-bottom:2px dashed var(--line)}
+.ai-badge{font-size:.85rem;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--bg);border:2px solid var(--line)}
+.ai-badge.on{border-color:var(--ok);color:var(--ok)}
+.log{flex:1;overflow-y:auto;max-height:360px;padding:14px 4px;display:flex;flex-direction:column;gap:10px}
+.msg{padding:11px 14px;border-radius:16px;max-width:92%;font-weight:500;white-space:pre-wrap}
+.msg.mentor{background:var(--bg);border-bottom-left-radius:4px}
+.msg.you{background:var(--sky);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.good{border-left:5px solid var(--ok)}
+.msg.bad{border-left:5px solid var(--bad)}
+
+/* progress */
+.prog{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+.level{background:var(--ink);color:var(--bg);border-radius:32px 32px 120px 32px;padding:28px}
+.level .rank{font-size:2.1rem;font-weight:800;letter-spacing:-.03em}
+.xpbar{height:16px;border-radius:99px;background:color-mix(in srgb,var(--bg) 25%,transparent);overflow:hidden;margin:16px 0 8px}
+.xpbar i{display:block;height:100%;background:var(--tag);border-radius:99px;transition:width .5s}
+.skillrow{display:grid;grid-template-columns:140px 1fr 52px;gap:12px;align-items:center;padding:7px 0;font-weight:600}
+.meter{height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--mint);border-radius:99px;transition:width .5s}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.badge{border:2px solid var(--line);border-radius:16px;padding:12px;background:var(--surface);opacity:.55}
+.badge.got{opacity:1;border-color:var(--ink);background:var(--card2);color:var(--ink)}
+.badge b{display:block}
+.badge span{font-size:.85rem;color:var(--muted)}
+.badge.got span{color:inherit;opacity:.8}
+.stat-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.stat{background:color-mix(in srgb,var(--bg) 14%,transparent);border-radius:14px;padding:10px 14px;font-weight:700}
+.stat b{display:block;font-size:1.4rem}
+
+footer{padding:40px 0 60px;border-top:2px dashed var(--line);color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:14px;font-weight:700;z-index:80;box-shadow:var(--shadow)}
+
+/* stage (games) */
+.stage{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.stage-bar{display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:2px dashed var(--line)}
+.stage-bar h2{font-size:1.4rem}
+.stage-bar .btn{margin-left:auto}
+.stage-body{flex:1;overflow-y:auto;padding:20px}
+.gsec{max-width:1060px;margin:0 auto}
+.g-q{font-size:1.25rem;font-weight:700;background:var(--surface);border:2px solid var(--ink);border-radius:18px;padding:14px 18px;min-height:3.6em;box-shadow:0 4px 0 var(--ink)}
+.g-stats{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.g-stats span{background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:4px 14px;font-weight:600}
+.g-stats b{font-size:1.1rem}
+.g-msg{min-height:3em;margin-top:12px;font-weight:600;padding:10px 14px;border-radius:12px}
+.g-msg.good{background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.g-msg.bad{background:color-mix(in srgb,var(--bad) 14%,transparent)}
+.flap-wrap{position:relative;width:100%;max-width:1060px;margin:0 auto;border:3px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:0 6px 0 var(--ink);touch-action:none;user-select:none;-webkit-user-select:none}
+.flap-wrap canvas{display:block;width:100%;aspect-ratio:16/9;height:auto;cursor:pointer}
+.catch-wrap{position:relative;width:100%;max-width:1060px;margin:0 auto;border:3px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 6px 0 var(--ink);touch-action:none;user-select:none;-webkit-user-select:none;background:var(--surface)}
+.catch-wrap canvas{display:block;width:100%;aspect-ratio:16/9;height:auto;cursor:crosshair}
+.overlay{position:absolute;inset:0;background:color-mix(in srgb,var(--bg) 90%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px}
+.overlay h3{font-size:2rem}
+.overlay p{color:var(--muted)}
+.choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0}
+.choice-card{min-height:170px;text-align:left;background:var(--surface);border:3px solid var(--ink);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 5px 0 var(--ink);font-weight:600}
+.choice-card:hover:not(:disabled){transform:translateY(-2px)}
+.choice-card:disabled{cursor:default;opacity:.78}
+.choice-card .choice-title{font-size:1.2rem;font-weight:800}
+.choice-card .choice-detail{color:var(--muted)}
+.choice-card .choice-result{margin-top:auto;font-weight:800}
+.choice-card.placed{background:color-mix(in srgb,var(--ok) 16%,var(--surface));border-color:var(--ok)}
+.choice-card.selected{outline:3px solid var(--sky)}
+.choice-card.over{border-color:var(--bad)}
+.budget-line{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:16px 0;font-size:1.1rem;font-weight:800}
+.budget-line span{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:8px 14px}
+.summary{background:var(--surface);border:3px solid var(--ink);border-radius:26px;padding:28px;text-align:center;box-shadow:0 6px 0 var(--ink)}
+.summary .big{font-size:3.6rem;font-weight:800;letter-spacing:-.04em}
+.receipt-game{max-width:780px;margin:0 auto}
+.receipt-game .g-stats{justify-content:flex-start;margin:0 0 14px 52px}
+.receipt-game .g-stats span{background:var(--surface);border:1px solid var(--line);padding:5px 14px}
+.receipt-prompt{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start;margin-bottom:14px;font-weight:800;line-height:1.4}
+.receipt-detective{font-size:2rem;line-height:1}
+.receipt-paper{width:min(100%,432px);margin:0 auto;background:var(--tag);color:var(--tag-ink);padding:20px 24px 34px;-webkit-mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/20px 100%;mask:conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) 50%/20px 100%}
+.receipt-brand{text-align:center;font-weight:800;font-size:1.1rem}
+.receipt-number{text-align:center;font-size:.78rem;font-weight:600;margin-top:4px}
+.receipt-divider{border-top:1px dashed color-mix(in srgb,var(--tag-ink) 75%,transparent);margin:8px 0}
+.receipt-lines{margin:0}
+.receipt-line{width:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 8px;border:0;background:transparent;color:inherit;text-align:left;font-size:.92rem;font-weight:700;line-height:1.35}
+.receipt-line:hover:not(:disabled){background:color-mix(in srgb,#fff 24%,transparent)}
+.receipt-line:disabled{cursor:default}
+.receipt-line .line-label{min-width:0}
+.receipt-line .line-value{white-space:nowrap}
+.receipt-line small{display:block;font-size:.78rem;font-weight:600}
+.receipt-line.total{font-size:1.08rem;font-weight:800}
+.receipt-line.bad{background:color-mix(in srgb,var(--bad) 13%,transparent);color:#8A1620}
+.receipt-line.good{background:color-mix(in srgb,var(--ok) 14%,transparent);color:#075E47}
+.receipt-progress{height:11px;border-radius:99px;background:var(--line);overflow:hidden;margin:16px 0 18px}
+.receipt-progress i{display:block;height:100%;width:0;background:var(--sale);border-radius:99px;transition:width .3s}
+.receipt-instruction{font-weight:600;margin-left:12px}
+@media (max-width:560px){.receipt-game .g-stats{margin-left:0}.receipt-paper{padding-left:14px;padding-right:14px}.receipt-line{gap:8px;font-size:.86rem}}
+
+@media (max-width:900px){
+  .hero .wrap,.two,.mentor,.prog{grid-template-columns:1fr}
+  .hero h1{max-width:none}
+  .games{grid-template-columns:1fr}
+  .daily-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .trick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g1,.g2,.g3{grid-column:1;grid-row:auto}
+  .g1{min-height:380px;border-radius:36px 36px 90px 36px}
+  .skillrow{grid-template-columns:110px 1fr 46px}
+  .tag-wrap{max-width:460px;margin:0 auto}
+}
+@media (max-width:560px){
+  body{font-size:16px}
+  .fields{grid-template-columns:1fr}
+  .daily-grid{grid-template-columns:1fr}
+  .trick-grid{grid-template-columns:1fr}
+  .choice-grid{grid-template-columns:1fr}
+  .deal{min-height:0}
+  .top .wrap{gap:8px}
+  .nav{order:3;width:100%;margin-left:0}
+  .hero{padding-top:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+.lang-btn{display:inline-flex;align-items:center;gap:7px;background:var(--tag);color:var(--tag-ink);border:2px solid var(--ink);box-shadow:0 3px 0 var(--ink);font-weight:800;cursor:pointer;transition:transform .08s,box-shadow .08s}
+.lang-btn:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--ink)}
+.lang-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+.lang-short{display:none}
+@media (max-width:640px){.lang-full{display:none}.lang-short{display:inline}}
+@media (max-width:640px){.top-r{width:100%;margin-left:0;flex-wrap:wrap}.top-r #chip{flex:1 1 100%;text-align:center}.top-r .lang-btn{flex:1 1 auto;justify-content:center}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Numerify home">
+      <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><path d="M4 7a3 3 0 0 1 3-3h13a3 3 0 0 1 2.1.9l9 9a3 3 0 0 1 0 4.2L18.2 30.1a3 3 0 0 1-4.2 0L4.9 21a3 3 0 0 1-.9-2.1V7z" fill="var(--tag)" stroke="var(--ink)" stroke-width="2"/><circle cx="10.5" cy="10.5" r="2.3" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.5"/><text x="12" y="25" font-family="Bricolage Grotesque,system-ui,sans-serif" font-weight="800" font-size="15" fill="var(--tag-ink)">N</text></svg>
+      Numerify
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#play">Challenges</a>
+      <a href="#daily">Daily 3</a>
+      <a href="#tricks">Trick library</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#mentor">AI Mentor</a>
+      <a href="#progress">Progress</a>
+    </nav>
+    <div class="top-r">
+      <span class="chip" id="chip">Lv 1 · Window Shopper</span>
+      <button class="chip lang-btn" id="langBtn" type="button" aria-label="Translate this website to Indonesian" title="Language"><span aria-hidden="true">🌐</span><span class="lang-full">English → Indonesia</span><span class="lang-short">EN → ID</span></button>
+      <button class="icon-btn" id="sndBtn" aria-label="Turn sound on" title="Sound">🔇</button>
+      <button class="icon-btn" id="themeBtn" aria-label="Switch light or dark theme" title="Theme">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <h1>Beat the discount tricks before they beat your allowance.</h1>
+      <p class="lead">Numerify turns online-shopping math into quick games. Work out the real price yourself, get hints from an AI mentor, and learn to spot a fake deal.</p>
+      <div class="cta">
+        <a class="btn" href="#play">Start a challenge</a>
+        <a class="btn alt" href="#toolkit">Open the calculator</a>
+      </div>
+      <p class="tagline">🛍️ Calculate Smart, Shop Smart!</p>
+    </div>
+    <div>
+      <div class="tag-wrap">
+        <div class="tag" id="heroTag">
+          <div class="item" id="heroItem">Hoodie</div>
+          <div class="was" id="heroWas">Rp250.000</div>
+          <div class="off"><span id="heroOff">35</span><small>% OFF</small></div>
+          <div class="fakeclock" aria-hidden="true">⏱ Flash sale ends in 00:<span id="fakeSec">09</span></div>
+          <div class="guess">
+            <input id="heroIn" inputmode="numeric" placeholder="You pay… (Rp)" aria-label="Your answer in rupiah">
+            <button class="btn small" id="heroGo">Check</button>
+            <button class="btn small" id="heroNew" aria-label="New price tag">↻</button>
+          </div>
+          <div class="guess-msg" id="heroMsg" aria-live="polite"></div>
+        </div>
+      </div>
+      <p class="tag-note">That countdown is decoration. Your answer matters more.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="play">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Shopping challenges</h2>
+      <p>Practice price sense, careful sorting, and smart budgeting with fresh shopping puzzles that leave room to think.</p>
+    </div>
+    <div class="games">
+      <article class="gcard g1">
+        <div class="scene" aria-hidden="true">
+          <div class="bar" style="top:0;height:34%"></div>
+          <div class="bar" style="top:50%;height:50%"></div>
+          <span class="pill" style="right:30%;top:36%">Rp127.500</span>
+          <span class="cart">🛒</span>
+        </div>
+        <h3>Flash Flap</h3>
+        <p>Flap your cart through the gap that shows the correct final price. The wrong gap costs a heart. The shelves cost one too.</p>
+        <div class="skills"><span>Discounts</span><span>VAT</span><span>Vouchers</span><span>Cashback</span></div>
+        <div class="meta">
+          <span class="best" id="bestFlap">Best: 0</span>
+          <button class="btn" data-play="flap">Play Flash Flap</button>
+        </div>
+      </article>
+      <article class="gcard g2">
+        <h3>Budget Catch</h3>
+        <p>Items rain down. Steer your cart to catch the ones that add up to your budget exactly. Sale tags hide the real price, and going over costs you the round.</p>
+        <div class="meta">
+          <span class="best" id="bestBudget">Best: 0</span>
+          <button class="btn" data-play="budget">Play Budget Catch</button>
+        </div>
+      </article>
+      <article class="gcard g3">
+        <h3>Receipt Detective</h3>
+        <p>Five receipts, five sneaky mistakes. Check the math line by line and tap the one line that doesn't add up. Shops make errors, and sometimes they do it on purpose.</p>
+        <div class="meta">
+          <span class="best" id="bestShelf">Best: 0</span>
+          <button class="btn" data-play="shelf">Open the case</button>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="daily">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Daily 3</h2>
+      <p>Three fresh questions every day, the same for every student. Solve all three for a bonus 30 XP.</p>
+    </div>
+    <p class="daily-status" id="dailyStatus" aria-live="polite"></p>
+    <div class="daily-grid" id="dailyCards"></div>
+  </div>
+</section>
+
+<section class="block" id="toolkit">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Shopper's toolkit</h2>
+      <p>Guess first, then check. These tools show every step, so you can see where each rupiah goes.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Toolkit">
+      <button role="tab" aria-selected="true" data-tab="tCalc">Discount calculator</button>
+      <button role="tab" aria-selected="false" data-tab="tPromo">Promo checker</button>
+      <button role="tab" aria-selected="false" data-tab="tFake">Fake-discount check</button>
+    </div>
+
+    <div class="panel" id="tCalc" role="tabpanel">
+      <div class="two">
+        <div>
+          <div class="fields">
+            <div class="field"><label for="cPrice">Sticker price (Rp)</label><input id="cPrice" type="number" inputmode="numeric" min="0" value="250000"></div>
+            <div class="field"><label for="cD1">Discount (%)</label><input id="cD1" type="number" inputmode="decimal" min="0" max="100" value="30"></div>
+            <div class="field"><label for="cD2">Extra discount (%)</label><input id="cD2" type="number" inputmode="decimal" min="0" max="100" value="20"></div>
+            <div class="field"><label for="cTax">VAT (%)</label><input id="cTax" type="number" inputmode="decimal" min="0" value="11"></div>
+            <div class="field"><label for="cV">Voucher (Rp)</label><input id="cV" type="number" inputmode="numeric" min="0" value="20000"></div>
+            <div class="field"><label for="cMin">Voucher minimum spend (Rp)</label><input id="cMin" type="number" inputmode="numeric" min="0" value="100000"></div>
+            <div class="field wide"><label for="cFee">Delivery and admin fees (Rp)</label><input id="cFee" type="number" inputmode="numeric" min="0" value="10000"></div>
+            <div class="field wide"><label for="cEst">Your own estimate first (Rp)</label><input id="cEst" type="number" inputmode="numeric" min="0" placeholder="Try it in your head, then type it here"></div>
+          </div>
+          <p class="hint">Order used: discount, extra discount on the new price, voucher (if the minimum spend is met), VAT, then fees.</p>
+        </div>
+        <div>
+          <div class="receipt" id="cReceipt" aria-live="polite"></div>
+          <div class="est" id="cEstMsg" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="tPromo" role="tabpanel" hidden>
+      <div class="two">
+        <div class="offer"><h4>Offer A</h4><div class="fields" id="pfA"></div><div class="out" id="pA"></div></div>
+        <div class="offer"><h4>Offer B</h4><div class="fields" id="pfB"></div><div class="out" id="pB"></div></div>
+      </div>
+      <div class="verdict" id="pVerdict" aria-live="polite"></div>
+    </div>
+
+    <div class="panel" id="tFake" role="tabpanel" hidden>
+      <div class="two">
+        <div>
+          <div class="fields">
+            <div class="field"><label for="fOrig">Crossed-out price (Rp)</label><input id="fOrig" type="number" inputmode="numeric" min="0" value="300000"></div>
+            <div class="field"><label for="fSale">Sale price (Rp)</label><input id="fSale" type="number" inputmode="numeric" min="0" value="195000"></div>
+            <div class="field wide"><label for="fClaim">Banner says (% off)</label><input id="fClaim" type="number" inputmode="decimal" min="0" max="100" value="50"></div>
+          </div>
+          <p class="hint">Real discount = (crossed-out price − sale price) ÷ crossed-out price.</p>
+        </div>
+        <div class="receipt" id="fOut" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="tricks">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Trick library</h2>
+      <p>Nine common ways shops nudge you to spend more. Learn the tell, then practice spotting it.</p>
+    </div>
+    <div class="trick-grid">
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">🏷️</span><h3 id="trickFakeTitle">Fake “was” price</h3>
+        <p id="trickFakeDesc">The shop raises the price for a while, then crosses it out and calls the old number a discount.</p>
+        <p class="trick-tell"><b id="trickTell1">Spot it</b><span id="trickFakeTell">You never saw that crossed-out price before.</span></p>
+        <button class="btn small alt" data-trick="fake">Test a discount</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">➕</span><h3 id="trickStackTitle">Stacked discounts</h3>
+        <p id="trickStackDesc">30% off plus an extra 20% sounds like 50%. The second one applies to the price left.</p>
+        <p class="trick-tell"><b id="trickTell2">Spot it</b><span id="trickStackTell">Two percentages in one banner.</span></p>
+        <button class="btn small alt" data-trick="stack">Practice stacking</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">🎟️</span><h3 id="trickVoucherTitle">Minimum-spend vouchers</h3>
+        <p id="trickVoucherDesc">A voucher can push you to buy more than planned just to unlock a small saving.</p>
+        <p class="trick-tell"><b id="trickTell3">Spot it</b><span id="trickVoucherTell">“Min. spend” in small print.</span></p>
+        <button class="btn small alt" data-trick="voucher">Practice vouchers</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">💸</span><h3 id="trickCashbackTitle">Capped cashback</h3>
+        <p id="trickCashbackDesc">Big cashback percentages often have a low maximum and arrive later as points.</p>
+        <p class="trick-tell"><b id="trickTell4">Spot it</b><span id="trickCashbackTell">“Up to”, “max”, or “in points”.</span></p>
+        <button class="btn small alt" data-trick="cashback">Practice cashback</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">🚚</span><h3 id="trickFeesTitle">Hidden fees</h3>
+        <p id="trickFeesDesc">Delivery, service, and admin fees appear at the last step and can eat the whole discount.</p>
+        <p class="trick-tell"><b id="trickTell5">Spot it</b><span id="trickFeesTell">The total changes at checkout.</span></p>
+        <button class="btn small alt" data-trick="fees">Practice fees</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">⏱️</span><h3 id="trickTimerTitle">Countdown pressure</h3>
+        <p id="trickTimerDesc">A ticking clock makes you rush. Many of these timers simply restart.</p>
+        <p class="trick-tell"><b id="trickTell6">Spot it</b><span id="trickTimerTell">A timer plus “only 2 left!”.</span></p>
+        <button class="btn small alt" id="trickTimerAction" data-trick="discount">Slow down and calculate</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">📦</span><h3 id="trickPackTitle">Shrinking packs</h3>
+        <p id="trickPackDesc">The price stays the same, but the pack gets smaller. Only the price per 100 g tells the truth.</p>
+        <p class="trick-tell"><b id="trickTell7">Spot it</b><span id="trickPackTell">Two similar packs, different sizes.</span></p>
+        <button class="btn small alt" data-trick="unit">Compare two packs</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">🔝</span><h3 id="trickUpToTitle">“Up to 70% off”</h3>
+        <p id="trickUpToDesc">Only a few items get the biggest discount. Most of the shop may be 10% off or less.</p>
+        <p class="trick-tell"><b id="trickTell8">Spot it</b><span id="trickUpToTell">The words “up to”.</span></p>
+        <button class="btn small alt" id="trickDiscountAction" data-trick="discount">Practice discounts</button>
+      </article>
+      <article class="trick-card">
+        <span class="trick-icon" aria-hidden="true">🧾</span><h3 id="trickVatTitle">VAT surprise</h3>
+        <p id="trickVatDesc">Prices shown without tax look cheaper. VAT is added at the end.</p>
+        <p class="trick-tell"><b id="trickTell9">Spot it</b><span id="trickVatTell">“Excl. tax” near the price.</span></p>
+        <button class="btn small alt" data-trick="tax">Practice VAT</button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="mentor">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>AI Mentor</h2>
+      <p>You solve it. The mentor guides you. Numerify checks every number itself, so the AI explains and never decides what is correct.</p>
+    </div>
+    <div class="mentor">
+      <div class="casebox">
+        <div class="row" style="justify-content:space-between">
+          <span class="skill-chip" id="mSkill">—</span>
+          <label class="row" style="gap:8px;font-weight:700">Topic
+            <select id="mTopic" style="padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--bg)"></select>
+          </label>
+        </div>
+        <p class="q" id="mCase" aria-live="polite"></p>
+        <div class="row">
+          <input id="mAnswer" inputmode="numeric" placeholder="Your answer (Rp)" aria-label="Your answer in rupiah">
+          <button class="btn small" id="mCheck">Check</button>
+        </div>
+        <div class="row" style="margin-top:14px">
+          <button class="btn small alt" id="mHint">Hint</button>
+          <button class="btn small alt" id="mSolution">Show solution</button>
+          <button class="btn small alt" id="mNew">New case</button>
+          <button class="btn small alt" id="mMissed">Review a missed one</button>
+        </div>
+        <ol class="steps" id="mSteps" hidden></ol>
+      </div>
+      <div class="chat">
+        <div class="chat-head"><b>Mentor chat</b><span class="ai-badge" id="aiBadge">Checking AI…</span></div>
+        <div class="log" id="mLog" aria-live="polite"></div>
+        <div class="row">
+          <input id="mAsk" placeholder="Ask about this case or any discount…" aria-label="Ask the mentor">
+          <button class="btn small" id="mSend">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="progress">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Your progress</h2>
+      <p>Saved on this device. Every answer builds your skills.</p>
+    </div>
+    <div class="prog">
+      <div>
+        <div class="level">
+          <div style="opacity:.8;font-weight:600">Level <span id="pLvl">1</span></div>
+          <div class="rank" id="pRank">Window Shopper</div>
+          <div class="xpbar"><i id="pXpBar" style="width:0%"></i></div>
+          <div id="pXpTxt" style="font-weight:600">0 / 120 XP</div>
+          <div class="stat-row">
+            <div class="stat"><b id="pCorrect">0</b>correct answers</div>
+            <div class="stat"><b id="pAcc">0%</b>accuracy</div>
+            <div class="stat"><b id="pStreak">0</b>day streak</div>
+          </div>
+        </div>
+        <h3 style="margin:28px 0 8px;font-size:1.3rem">Skills</h3>
+        <div id="pSkills"></div>
+      </div>
+      <div>
+        <div class="panel">
+          <h3 style="font-size:1.3rem;margin-bottom:12px">Best scores</h3>
+          <div class="rrow"><span>Flash Flap</span><b id="pbFlap">0</b></div>
+          <div class="rrow"><span>Receipt Detective</span><b id="pbShelf">0</b></div>
+          <div class="rrow"><span>Budget Catch</span><b id="pbBudget">0</b></div>
+        </div>
+        <h3 style="margin:28px 0 12px;font-size:1.3rem">Badges</h3>
+        <div class="badges" id="pBadges"></div>
+        <div style="margin-top:24px"><button class="btn small alt" id="resetBtn">Reset my progress</button> <span class="hint" id="resetMsg"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><b style="color:var(--ink)">Numerify</b> — Calculate Smart, Shop Smart!</div>
+    <div>Class XI-3 · AI Survive Project · Numeracy (Daily Life)</div>
+  </div>
+</footer>
+
+<!-- GAME STAGE -->
+<div class="stage" id="stage" hidden role="dialog" aria-modal="true" aria-labelledby="stageTitle">
+  <div class="stage-bar">
+    <h2 id="stageTitle">Game</h2>
+    <button class="btn small alt" id="stageClose">Close</button>
+  </div>
+  <div class="stage-body">
+
+    <div class="gsec" id="gFlap" hidden>
+      <div class="g-q" id="flapQ" aria-live="polite">Press Start, then flap your cart.</div>
+      <div class="g-stats"><span>Score <b id="flapScore">0</b></span><span>Lives <b id="flapLives" aria-label="lives">♥♥♥</b></span><span>Streak <b id="flapStreak">0</b></span></div>
+      <div class="flap-wrap">
+        <canvas id="flapCv" aria-label="Flash Flap game board"></canvas>
+        <div class="overlay" id="flapOv"></div>
+      </div>
+      <p class="g-msg" id="flapMsg" aria-live="polite"></p>
+    </div>
+
+    <div class="gsec receipt-game" id="gShelf" hidden>
+      <div id="shelfPlay">
+        <div class="g-stats"><span>Receipt <b id="shelfRound">1</b>/5</span><span>Score <b id="shelfScore">0</b></span></div>
+        <div class="receipt-prompt"><span class="receipt-detective" aria-hidden="true">🕵️‍♂️</span><p id="shelfQ" aria-live="polite"></p></div>
+        <div class="receipt-paper"><div class="receipt-brand" id="shelfBrand">SARI MART</div><div class="receipt-number" id="shelfNumber">Receipt #0000</div><div class="receipt-divider"></div><div class="receipt-lines" id="shelfLines"></div></div>
+        <div class="receipt-progress" role="progressbar" aria-label="Receipt Detective round progress" aria-valuemin="0" aria-valuemax="5"><i id="shelfProgress"></i></div>
+        <p class="receipt-instruction" id="shelfInstruction">Find the one line that is wrong.</p>
+        <p class="g-msg" id="shelfMsg" aria-live="polite"></p>
+        <div class="row"><button class="btn" id="shelfNext" hidden>Next receipt</button></div>
+      </div>
+      <div class="summary" id="shelfEnd" hidden></div>
+    </div>
+
+    <div class="gsec" id="gBudget" hidden>
+      <div id="budgetPlay">
+        <div class="g-stats"><span>Round <b id="budgetRound">1</b>/3</span><span>Score <b id="budgetScore">0</b></span><span>Caught <b id="budgetCaught">0</b></span></div>
+        <div class="g-q" id="budgetQ" aria-live="polite"></div>
+        <div class="budget-line"><span id="budgetTargetLabel">Target <b id="budgetTarget"></b></span><span id="budgetCartLabel">Cart <b id="budgetTotal">Rp0</b></span></div>
+        <div class="catch-wrap"><canvas id="budgetCv" aria-label="Budget Catch game board"></canvas><div class="overlay" id="budgetOv"></div></div>
+        <p class="g-msg" id="budgetMsg" aria-live="polite"></p>
+        <div class="row"><button class="btn" id="budgetNext" hidden>Next round</button></div>
+      </div>
+      <div class="summary" id="budgetEnd" hidden></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+/* ---------- helpers ---------- */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const rp=n=>(n<0?'−':'')+'Rp'+Math.abs(Math.round(n)).toLocaleString('id-ID');
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const stepR=(a,b,s)=>a+s*rnd(0,Math.floor((b-a)/s));
+const num=id=>{const v=parseFloat($('#'+id).value);return isNaN(v)?0:v};
+const parseRp=s=>{const d=String(s).replace(/[^\d]/g,'');return d?parseInt(d,10):NaN};
+
+/* ---------- storage ---------- */
+const KEY='numerify:v1';
+const defaults=()=>({xp:0,skills:{},best:{flap:0,shelf:0,budget:0},daily:{date:'',attempted:[],solved:[],bonusAwarded:false},plays:0,lastDay:'',streakDays:0,badges:{},missed:[],mentorUses:0});
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);const d=defaults(),daily=Object.assign(d.daily,o.daily||{});daily.attempted=Array.isArray(daily.attempted)?daily.attempted:[];daily.solved=Array.isArray(daily.solved)?daily.solved:[];return Object.assign(d,o,{best:Object.assign(d.best,o.best||{}),daily})}}catch(e){}return defaults()}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- sound ---------- */
+let muted=true,ac=null;
+function beep(f,d,type,v){if(muted)return;try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type||'sine';o.frequency.value=f;g.gain.value=v||.05;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+(d||.12));o.stop(ac.currentTime+(d||.12))}catch(e){}}
+const sfx={good(){beep(660);setTimeout(()=>beep(880),90)},bad(){beep(170,.25,'square',.035)},flap(){beep(430,.05,'triangle',.03)}};
+$('#sndBtn').addEventListener('click',()=>{muted=!muted;$('#sndBtn').textContent=muted?'🔇':'🔊';$('#sndBtn').setAttribute('aria-label',muted?'Turn sound on':'Turn sound off');if(!muted)sfx.good()});
+
+/* ---------- theme ---------- */
+(function(){try{const t=localStorage.getItem('numerify:theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t}catch(e){}})();
+$('#themeBtn').addEventListener('click',()=>{const cur=document.documentElement.dataset.theme||'light';const nx=cur==='dark'?'light':'dark';document.documentElement.dataset.theme=nx;try{localStorage.setItem('numerify:theme',nx)}catch(e){}});
+
+/* ---------- language ---------- */
+let language='en';
+try{if(localStorage.getItem('numerify:language')==='id')language='id'}catch(e){}
+const T=(en,id)=>language==='id'?id:en;
+const UI_ID=[
+  ['.nav a:nth-child(1)','Tantangan'],['.nav a:nth-child(2)','Soal Harian'],['.nav a:nth-child(3)','Perpustakaan trik'],['.nav a:nth-child(4)','Peralatan'],['.nav a:nth-child(5)','Mentor AI'],['.nav a:nth-child(6)','Progres'],
+  ['.hero h1','Kenali trik diskon sebelum uang jajanmu habis.'],['.hero .lead','Numerify mengubah hitung-hitungan belanja online menjadi permainan singkat. Hitung harga sebenarnya, minta petunjuk dari mentor AI, dan kenali promo palsu.'],
+  ['.hero .cta a:first-child','Mulai tantangan'],['.hero .cta a:last-child','Buka kalkulator'],['.tagline','🛍️ Hitung Cerdas, Belanja Cerdas!'],['.tag .off small','% DISKON'],['.fakeclock','⏱ Promo kilat berakhir dalam 00:'],['.guess #heroGo','Periksa'],['.tag-note','Hitung mundurnya hanya hiasan. Yang penting jawabanmu.'],
+  ['#play .sec-head h2','Tantangan belanja'],['#play .sec-head p','Asah naluri harga, ketelitian membandingkan, dan kecakapan mengatur anggaran lewat teka-teki belanja baru yang memberimu waktu untuk berpikir.'],
+  ['.g1 h3','Flash Flap'],['.g1 > p','Terbangkan troli melewati celah dengan harga akhir yang tepat. Salah memilih atau menabrak rak mengurangi satu nyawa.'],['.g1 .skills span:nth-child(1)','Diskon'],['.g1 .skills span:nth-child(2)','PPN'],['.g1 .skills span:nth-child(3)','Voucher'],['.g1 .skills span:nth-child(4)','Cashback'],['.g1 [data-play]','Mainkan Flash Flap'],
+  ['.g2 h3','Budget Catch'],['.g2 > p','Barang berjatuhan. Arahkan troli untuk menangkap barang yang jumlahnya tepat sesuai anggaran. Label promo menyamarkan harga sebenarnya; jika melewati anggaran, putaranmu kalah.'],['.g2 [data-play]','Mainkan Budget Catch'],
+  ['.g3 h3','Detektif Struk'],['.g3 > p','Lima struk, lima kesalahan tersembunyi. Periksa hitungannya baris demi baris, lalu ketuk baris yang salah. Kesalahan toko bisa tidak sengaja, atau memang disengaja.'],['.g3 [data-play]','Buka kasus'],
+  ['#toolkit .sec-head h2','Peralatan belanja'],['#toolkit .sec-head p','Tebak dulu, lalu periksa. Lihat setiap langkah untuk mengetahui ke mana setiap rupiah dibelanjakan.'],['.tabs button:nth-child(1)','Kalkulator diskon'],['.tabs button:nth-child(2)','Pemeriksa promo'],['.tabs button:nth-child(3)','Cek diskon palsu'],
+  ['label[for="cPrice"]','Harga awal (Rp)'],['label[for="cD1"]','Diskon (%)'],['label[for="cD2"]','Diskon tambahan (%)'],['label[for="cTax"]','PPN (%)'],['label[for="cV"]','Voucher (Rp)'],['label[for="cMin"]','Minimum belanja voucher (Rp)'],['label[for="cFee"]','Ongkir dan biaya admin (Rp)'],['label[for="cEst"]','Coba hitung sendiri dulu (Rp)'],['#toolkit .two .hint','Urutan hitung: diskon, diskon tambahan dari harga baru, voucher (jika minimum belanja terpenuhi), PPN, lalu biaya.'],
+  ['#tPromo .offer:first-child h4','Promo A'],['#tPromo .offer:last-child h4','Promo B'],['label[for="fOrig"]','Harga sebelum diskon (Rp)'],['label[for="fSale"]','Harga setelah diskon (Rp)'],['label[for="fClaim"]','Klaim di banner (% diskon)'],['#tFake .hint','Diskon sebenarnya = (harga awal − harga setelah diskon) ÷ harga awal.'],
+  ['#mentor .sec-head h2','Mentor AI'],['#mentor .sec-head p','Kamu yang mengerjakan, mentor memberi arahan. Numerify memeriksa hitungan sendiri agar AI membantu menjelaskan, bukan menentukan jawaban.'],['#mentor .casebox label','Topik'],['#mCheck','Periksa'],['#mHint','Petunjuk'],['#mSolution','Lihat solusi'],['#mNew','Soal baru'],['#mMissed','Ulangi soal yang salah'],['#mentor .chat-head b','Obrolan mentor'],['#mSend','Kirim'],
+  ['.stat:nth-child(1)','jawaban benar'],['.stat:nth-child(2)','akurasi'],['.stat:nth-child(3)','hari beruntun'],['#progress .sec-head h2','Progresmu'],['#progress .sec-head p','Tersimpan di perangkat ini. Setiap jawaban mengasah kemampuanmu.'],['.level > div:first-child','Level'],['#progress > .wrap > .prog > div:first-child > h3','Kemampuan'],['#progress .panel h3','Skor terbaik'],['#progress > .wrap > .prog > div:last-child > h3','Lencana'],['#resetBtn','Atur ulang progres'],['footer .wrap > div:first-child','— Hitung Cerdas, Belanja Cerdas!'],['footer .wrap > div:last-child','Kelas XI-3 · Proyek AI Survive · Numerasi (Kehidupan Sehari-hari)'],
+  ['#stageClose','Tutup'],['#gFlap .g-stats span:nth-child(1)','Skor'],['#gFlap .g-stats span:nth-child(2)','Nyawa'],['#gFlap .g-stats span:nth-child(3)','Beruntun'],['#gShelf .g-stats span:nth-child(1)','Struk'],['#gShelf .g-stats span:nth-child(2)','Skor'],['#shelfNext','Struk berikutnya'],['#shelfInstruction','Temukan satu baris yang salah.'],['#gBudget .g-stats span:nth-child(1)','Putaran'],['#gBudget .g-stats span:nth-child(2)','Skor'],['#gBudget .g-stats span:nth-child(3)','Tertangkap'],['#budgetTargetLabel','Target'],['#budgetCartLabel','Keranjang'],['#budgetNext','Putaran berikutnya']
+];
+const UI_MORE_ID=[['.fakeclock','⏱ Promo kilat berakhir dalam 00:'],['.guess #heroGo','Periksa']];
+const UI_DAILY_ID=[['#daily .sec-head h2','3 Soal Harian'],['#daily .sec-head p','Tiga soal baru setiap hari, sama untuk semua siswa. Selesaikan ketiganya untuk mendapat bonus 30 XP.']];
+const UI_TRICKS_ID=[
+  ['#tricks .sec-head h2','Perpustakaan trik'],['#tricks .sec-head p','Kenali sembilan cara toko mendorongmu berbelanja lebih banyak. Pelajari tandanya, lalu berlatih mengenalinya.'],
+  ['#trickFakeTitle','Harga “sebelumnya” palsu'],['#trickFakeDesc','Toko menaikkan harga untuk sementara, lalu mencoretnya dan menyebut angka lama sebagai diskon.'],['#trickTell1','Kenali tandanya'],['#trickFakeTell','Kamu belum pernah melihat harga yang dicoret itu sebelumnya.'],['[data-trick="fake"]','Uji diskon'],
+  ['#trickStackTitle','Diskon bertingkat'],['#trickStackDesc','Diskon 30% ditambah 20% terdengar seperti 50%. Diskon kedua berlaku untuk harga yang sudah dikurangi.'],['#trickTell2','Kenali tandanya'],['#trickStackTell','Dua persentase dalam satu banner.'],['[data-trick="stack"]','Latihan diskon bertingkat'],
+  ['#trickVoucherTitle','Voucher minimum belanja'],['#trickVoucherDesc','Voucher bisa mendorongmu membeli lebih banyak dari rencana hanya untuk mendapat sedikit potongan.'],['#trickTell3','Kenali tandanya'],['#trickVoucherTell','Tulisan “Min. belanja” dengan huruf kecil.'],['[data-trick="voucher"]','Latihan voucher'],
+  ['#trickCashbackTitle','Cashback terbatas'],['#trickCashbackDesc','Persentase cashback besar sering memiliki batas rendah dan baru diterima belakangan sebagai poin.'],['#trickTell4','Kenali tandanya'],['#trickCashbackTell','“Hingga”, “maks.”, atau “dalam poin”.'],['[data-trick="cashback"]','Latihan cashback'],
+  ['#trickFeesTitle','Biaya tersembunyi'],['#trickFeesDesc','Ongkir, layanan, dan admin muncul di langkah terakhir dan bisa menghabiskan seluruh potongan.'],['#trickTell5','Kenali tandanya'],['#trickFeesTell','Total berubah saat pembayaran.'],['[data-trick="fees"]','Latihan biaya'],
+  ['#trickTimerTitle','Tekanan hitung mundur'],['#trickTimerDesc','Jam yang terus berjalan membuatmu terburu-buru. Banyak penghitung waktu hanya dimulai ulang.'],['#trickTell6','Kenali tandanya'],['#trickTimerTell','Ada timer dan tulisan “tersisa 2!”.'],['#trickTimerAction','Hitung dengan tenang'],
+  ['#trickPackTitle','Ukuran kemasan menyusut'],['#trickPackDesc','Harganya tetap, tetapi isi kemasan lebih sedikit. Harga per 100 g menunjukkan nilai sebenarnya.'],['#trickTell7','Kenali tandanya'],['#trickPackTell','Dua kemasan mirip dengan ukuran berbeda.'],['[data-trick="unit"]','Bandingkan dua kemasan'],
+  ['#trickUpToTitle','“Diskon hingga 70%”'],['#trickUpToDesc','Hanya sedikit barang yang mendapat diskon terbesar. Sebagian besar toko mungkin hanya memberi diskon 10% atau kurang.'],['#trickTell8','Kenali tandanya'],['#trickUpToTell','Perhatikan kata “hingga”.'],['#trickDiscountAction','Latihan diskon'],['#trickVatTitle','Kejutan PPN'],['#trickVatDesc','Harga tanpa pajak terlihat lebih murah. PPN ditambahkan di akhir.'],['#trickTell9','Kenali tandanya'],['#trickVatTell','Ada tulisan “belum termasuk pajak” di dekat harga.'],['[data-trick="tax"]','Latihan PPN']
+];
+function setLocalizedText(el,idText){
+  const node=Array.from(el.childNodes).find(n=>n.nodeType===Node.TEXT_NODE&&n.nodeValue.trim());if(!node)return;
+  if(el.dataset.enText===undefined)el.dataset.enText=node.nodeValue.trim();
+  const current=language==='id'?idText:el.dataset.enText;
+  node.nodeValue=node.nodeValue.replace(/\S[\s\S]*\S|\S/g,current);
+}
+function applyStaticLanguage(){
+  document.documentElement.lang=language;
+  document.title=T('Numerify — Calculate Smart, Shop Smart!','Numerify — Hitung Cerdas, Belanja Cerdas!');
+  UI_ID.concat(UI_MORE_ID,UI_DAILY_ID,UI_TRICKS_ID).forEach(([selector,idText])=>{const el=$(selector);if(el)setLocalizedText(el,idText)});
+  const button=$('#langBtn');button.innerHTML=`<span aria-hidden="true">🌐</span><span class="lang-full">${T('English → Indonesia','Indonesia → English')}</span><span class="lang-short">${T('EN → ID','ID → EN')}</span>`;button.setAttribute('aria-label',T('Translate this website to Indonesian','Terjemahkan situs ini ke bahasa Inggris'));button.title=T('Language','Bahasa');
+  const attrs=[['#heroIn','placeholder','You pay… (Rp)','Kamu bayar… (Rp)'],['#heroIn','aria-label','Your answer in rupiah','Jawabanmu dalam rupiah'],['#heroNew','aria-label','New price tag','Buat label harga baru'],['#cEst','placeholder','Try it in your head, then type it here','Coba hitung sendiri, lalu masukkan di sini'],['#mAnswer','placeholder','Your answer (Rp)','Jawabanmu (Rp)'],['#mAnswer','aria-label','Your answer in rupiah','Jawabanmu dalam rupiah'],['#mAsk','placeholder','Ask about this case or any discount…','Tanyakan soal ini atau diskon lainnya…'],['#mAsk','aria-label','Ask the mentor','Tanya mentor'],['#flapCv','aria-label','Flash Flap game board','Papan permainan Flash Flap'],['#budgetCv','aria-label','Budget Catch game board','Papan permainan Budget Catch'],['.receipt-progress','aria-label','Receipt Detective round progress','Progres putaran Detektif Struk'],['#themeBtn','title','Theme','Tema'],['#themeBtn','aria-label','Switch light or dark theme','Ganti tema terang atau gelap'],['#sndBtn','title','Sound','Suara']];
+  attrs.forEach(([selector,attr,en,id])=>{const el=$(selector);if(!el)return;const key='en'+attr.replace(/[^a-z]/gi,'');if(el.dataset[key]===undefined)el.dataset[key]=el.getAttribute(attr)||en;el.setAttribute(attr,language==='id'?id:el.dataset[key])});
+  $('#sndBtn').setAttribute('aria-label',T(muted?'Turn sound on':'Turn sound off',muted?'Nyalakan suara':'Matikan suara'));
+}
+$('#langBtn').addEventListener('click',()=>{language=language==='en'?'id':'en';try{localStorage.setItem('numerify:language',language)}catch(e){}applyStaticLanguage();refreshLanguage()});
+function refreshLanguage(){
+  const topic=$('#mTopic').value||'mixed';
+  $('#mTopic').innerHTML=`<option value="mixed">${T('Mixed','Campuran')}</option>`+Object.keys(G).map(k=>`<option value="${k}">${skillName(k)}</option>`).join('');
+  $('#mTopic').value=topic;
+  PF.forEach(([key,en,id])=>['a','b'].forEach(side=>{$(`label[for="${side}_${key}"]`).textContent=language==='id'?id:en}));
+  heroNew();calc();promo();fake();renderProgress();renderDaily();aiBadge();Mentor.refresh();
+}
+
+/* ---------- question generators (all math verified here) ---------- */
+const ITEMS=['hoodie','pair of sneakers','backpack','headphones','phone case','water bottle','gaming mouse','T-shirt','keyboard','desk lamp'];
+const FOOD=['chicken rice bowl','burger meal','ramen set','nasi goreng set','boba combo'];
+const ITEM_ID={hoodie:'hoodie','pair of sneakers':'sepatu sneakers',backpack:'ransel',headphones:'headphone','phone case':'casing ponsel','water bottle':'botol minum','gaming mouse':'mouse gaming','T-shirt':'kaus',keyboard:'keyboard','desk lamp':'lampu meja','chicken rice bowl':'nasi ayam','burger meal':'paket burger','ramen set':'paket ramen','nasi goreng set':'paket nasi goreng','boba combo':'paket boba',game:'permainan','book bundle':'paket buku','online course':'kursus online',sneakers:'sepatu',notebook:'buku catatan','notebook set':'paket buku catatan','rice crackers':'kerupuk','cooking oil':'minyak goreng','instant noodles':'mi instan',chocolate:'cokelat','laundry powder':'deterjen'};
+const itemName=item=>{const key=Object.keys(ITEM_ID).find(name=>name.toLowerCase()===String(item).toLowerCase());const translated=T(item,ITEM_ID[key]||item);return item&&item[0]===item[0].toUpperCase()?translated.replace(/^./,c=>c.toUpperCase()):translated};
+const articleItem=item=>item==='headphones'?'a pair of headphones':item==='pair of sneakers'?'a pair of sneakers':`a ${item}`;
+const sentenceItem=item=>articleItem(item).replace(/^./,c=>c.toUpperCase());
+const SKILLS={discount:'Discounts',tax:'VAT',taxdisc:'Discount + VAT',stack:'Stacked discounts',voucher:'Vouchers',cashback:'Cashback',fees:'Hidden fees',unit:'Unit price',compare:'Comparing deals'};
+const SKILLS_ID={discount:'Diskon',tax:'PPN',taxdisc:'Diskon + PPN',stack:'Diskon bertingkat',voucher:'Voucher',cashback:'Cashback',fees:'Biaya tersembunyi',unit:'Harga satuan',compare:'Membandingkan promo'};
+const skillName=key=>T(SKILLS[key]||'Case',SKILLS_ID[key]||'Soal');
+const G={};
+G.discount=()=>{const price=stepR(40000,400000,5000),p=pick([10,15,20,25,30,40,50,60,75]),d=price*p/100,f=price-d,it=pick(ITEMS);
+  return{skill:'discount',text:T(`${sentenceItem(it)} costs ${rp(price)} and has a ${p}% discount. How much do you pay?`,`Sebuah ${itemName(it)} seharga ${rp(price)} mendapat diskon ${p}%. Berapa yang harus dibayar?`),answer:f,
+  steps:[T(`Discount = ${p}% × ${rp(price)} = ${rp(d)}`,`Diskon = ${p}% × ${rp(price)} = ${rp(d)}`),T(`You pay ${rp(price)} − ${rp(d)} = ${rp(f)}`,`Harga yang dibayar ${rp(price)} − ${rp(d)} = ${rp(f)}`)],
+  hints:[T('Find the discount in rupiah first, then subtract it from the price.','Hitung jumlah diskon dalam rupiah, lalu kurangi dari harga.'),T(`10% is the price with one digit removed: ${rp(price/10)}. Build ${p}% from that.`,`10% dari harga adalah ${rp(price/10)}. Gunakan angka itu untuk menghitung ${p}%.`)],
+  traps:[d,price+d],lesson:T(`Common slip: stopping at the discount amount (${rp(d)}) instead of subtracting it from the price.`,`Kesalahan umum: berhenti pada jumlah diskon (${rp(d)}) tanpa mengurangkannya dari harga.`)}};
+G.tax=()=>{const price=stepR(50000,500000,10000),t=price*0.11,f=price+t,it=pick(['game','book bundle','online course','sneakers','headphones']);
+  return{skill:'tax',text:T(`${sentenceItem(it)} costs ${rp(price)} before tax. VAT is 11%. What is the total at checkout?`,`Sebuah ${itemName(it)} seharga ${rp(price)} belum termasuk pajak. PPN 11%. Berapa total yang dibayar?`),answer:f,
+  steps:[T(`VAT = 11% × ${rp(price)} = ${rp(t)}`,`PPN = 11% × ${rp(price)} = ${rp(t)}`),T(`Total = ${rp(price)} + ${rp(t)} = ${rp(f)}`,`Total = ${rp(price)} + ${rp(t)} = ${rp(f)}`)],
+  hints:[T('VAT is added on top of the price.','PPN ditambahkan di atas harga.'),T('11% = 10% + 1%. Find both parts and add them.','11% = 10% + 1%. Hitung keduanya, lalu jumlahkan.')],
+  traps:[t,price*1.1],lesson:T(`VAT is added to the price. ${rp(t)} is only the tax, not the total.`,`PPN ditambahkan ke harga. ${rp(t)} hanya jumlah pajaknya, bukan totalnya.`)}};
+G.taxdisc=()=>{const price=stepR(100000,500000,10000),p=pick([10,20,25,30,40,50]),after=price*(100-p)/100,tax=after*0.11,f=after+tax,it=pick(ITEMS);
+  return{skill:'taxdisc',text:T(`${sentenceItem(it)} costs ${rp(price)} with ${p}% off. Then 11% VAT is added to the discounted price. What is the total?`,`Sebuah ${itemName(it)} seharga ${rp(price)} mendapat diskon ${p}%. Setelah itu, PPN 11% ditambahkan ke harga diskon. Berapa totalnya?`),answer:f,
+  steps:[T(`After discount: ${rp(price)} × ${(100-p)}% = ${rp(after)}`,`Setelah diskon: ${rp(price)} × ${(100-p)}% = ${rp(after)}`),T(`VAT: 11% × ${rp(after)} = ${rp(tax)}`,`PPN: 11% × ${rp(after)} = ${rp(tax)}`),T(`Total = ${rp(after)} + ${rp(tax)} = ${rp(f)}`,`Total = ${rp(after)} + ${rp(tax)} = ${rp(f)}`)],
+  hints:[T('Do the discount first. VAT is charged on the new, lower price.','Hitung diskon terlebih dahulu. PPN dikenakan pada harga baru yang lebih rendah.'),T('Do not add or subtract the percentages together. Work step by step.','Jangan menjumlahkan atau mengurangkan persentasenya. Hitung langkah demi langkah.')],
+  traps:[price*(100-p+11)/100,after],lesson:T(`Percentages that apply one after another can't be merged by adding. Discount first, then VAT on the result.`,`Persentase yang diterapkan berurutan tidak bisa digabung dengan menjumlahkannya. Hitung diskon dulu, lalu PPN.`)}};
+G.stack=()=>{const price=stepR(50000,300000,10000),p1=pick([20,30,40,50]),p2=pick([10,20,25,50]),a=price*(100-p1)/100,f=price*(100-p1)*(100-p2)/10000,it=pick(ITEMS);
+  return{skill:'stack',text:T(`${sentenceItem(it)} costs ${rp(price)}. It gets ${p1}% off, then an extra ${p2}% off the new price. What is the final price?`,`Sebuah ${itemName(it)} seharga ${rp(price)} mendapat diskon ${p1}%, lalu diskon tambahan ${p2}% dari harga baru. Berapa harga akhirnya?`),answer:f,
+  steps:[T(`After ${p1}% off: ${rp(price)} × ${100-p1}% = ${rp(a)}`,`Setelah diskon ${p1}%: ${rp(price)} × ${100-p1}% = ${rp(a)}`),T(`After the extra ${p2}%: ${rp(a)} × ${100-p2}% = ${rp(f)}`,`Setelah diskon tambahan ${p2}%: ${rp(a)} × ${100-p2}% = ${rp(f)}`),T(`Total off is ${+(100-(100-p1)*(100-p2)/100).toFixed(1)}%, not ${p1+p2}%.`,`Total diskonnya ${+(100-(100-p1)*(100-p2)/100).toFixed(1)}%, bukan ${p1+p2}%.`)],
+  hints:[T('The second discount applies to the already-reduced price.','Diskon kedua dihitung dari harga yang sudah dikurangi.'),T(`Find the price after the first discount, then discount that number again.`,`Hitung harga setelah diskon pertama, lalu diskon lagi dari angka itu.`)],
+  traps:[price*(100-p1-p2)/100,price*(100-p1)/100],lesson:T(`Discounts stack one after another. ${p1}% + ${p2}% is not ${p1+p2}% off.`,`Diskon diterapkan satu per satu. ${p1}% + ${p2}% bukan berarti diskon ${p1+p2}%.`)}};
+G.voucher=()=>{const each=stepR(35000,150000,5000),qty=pick([2,3]),total=each*qty,v=pick([10000,15000,20000,25000]),met=Math.random()<.55;
+  const min=met?Math.max(10000,Math.floor(total*0.8/10000)*10000):Math.ceil((total+5000)/10000)*10000+pick([0,10000,20000]);
+  const it=pick(['T-shirt','phone case','water bottle','notebook set']);const f=met?total-v:total;
+  return{skill:'voucher',text:T(`You buy ${qty} ${it}s at ${rp(each)} each. A voucher gives ${rp(v)} off with a minimum spend of ${rp(min)}. How much do you pay?`,`Kamu membeli ${qty} ${itemName(it)} seharga ${rp(each)} per buah. Voucher memberi potongan ${rp(v)} dengan minimum belanja ${rp(min)}. Berapa yang harus dibayar?`),answer:f,
+  steps:[T(`Total = ${qty} × ${rp(each)} = ${rp(total)}`,`Total = ${qty} × ${rp(each)} = ${rp(total)}`),met?T(`${rp(total)} ≥ ${rp(min)}, so the voucher works.`,`${rp(total)} ≥ ${rp(min)}, jadi voucher bisa dipakai.`):T(`${rp(total)} < ${rp(min)}, so the voucher does not work.`,`${rp(total)} < ${rp(min)}, jadi voucher tidak bisa dipakai.`),T(`You pay ${rp(f)}`,`Kamu membayar ${rp(f)}`)],
+  hints:[T('First find the total of all items.','Hitung total semua barang terlebih dahulu.'),T('Compare the total with the minimum spend before using the voucher.','Bandingkan total belanja dengan minimum sebelum memakai voucher.')],
+  traps:met?[total,total-2*v]:[total-v],lesson:met?T(`The voucher applies because ${rp(total)} reaches the minimum spend of ${rp(min)}.`,`Voucher bisa dipakai karena total ${rp(total)} mencapai minimum belanja ${rp(min)}.`):T(`The total ${rp(total)} is below the minimum spend of ${rp(min)}, so the voucher is not used.`,`Total ${rp(total)} kurang dari minimum belanja ${rp(min)}, jadi voucher tidak bisa dipakai.`)}};
+G.cashback=()=>{const price=stepR(50000,300000,10000),p=pick([10,20,30]),cap=pick([10000,15000,20000]),raw=price*p/100,cb=Math.min(raw,cap),it=pick(ITEMS);
+  return{skill:'cashback',text:T(`You pay ${rp(price)} for ${articleItem(it)}. You get ${p}% cashback in e-wallet points, capped at ${rp(cap)}. What is your real cost after the cashback?`,`Kamu membayar ${rp(price)} untuk ${itemName(it)}. Kamu mendapat cashback ${p}% berupa poin dompet digital, maksimal ${rp(cap)}. Berapa biaya sebenarnya setelah cashback?`),answer:price-cb,
+  steps:[T(`${p}% of ${rp(price)} = ${rp(raw)}`,`${p}% dari ${rp(price)} = ${rp(raw)}`),T(`The cap is ${rp(cap)}, so cashback = ${rp(cb)}`,`Batas cashback ${rp(cap)}, jadi cashback yang didapat ${rp(cb)}`),T(`Real cost = ${rp(price)} − ${rp(cb)} = ${rp(price-cb)}`,`Biaya sebenarnya = ${rp(price)} − ${rp(cb)} = ${rp(price-cb)}`)],
+  hints:[T('Work out the cashback first, then check the cap.','Hitung cashback terlebih dahulu, lalu periksa batasnya.'),T('Cashback is limited. Use the smaller of the two numbers.','Cashback memiliki batas. Gunakan nilai yang lebih kecil.')],
+  traps:[price-raw,price,cb],lesson:T(`Cashback has a cap, and it arrives after you pay. You still need ${rp(price)} up front.`,`Cashback memiliki batas dan diterima setelah pembayaran. Kamu tetap perlu membayar ${rp(price)} di awal.`)}};
+G.fees=()=>{const meal=stepR(25000,90000,5000),pr=pick([20,30,40,50]),del=pick([8000,10000,12000,15000]),sv=pick([2000,3000,4000,5000]),pd=meal*pr/100,f=meal-pd+del+sv,food=pick(FOOD);
+  return{skill:'fees',text:T(`A ${food} costs ${rp(meal)}. The promo is ${pr}% off the food only. Delivery is ${rp(del)} and the service fee is ${rp(sv)}. What is the total?`,`Satu ${itemName(food)} seharga ${rp(meal)} mendapat diskon ${pr}% khusus makanannya. Ongkir ${rp(del)} dan biaya layanan ${rp(sv)}. Berapa totalnya?`),answer:f,
+  steps:[T(`Promo: ${pr}% × ${rp(meal)} = ${rp(pd)}`,`Promo: ${pr}% × ${rp(meal)} = ${rp(pd)}`),T(`Food after promo = ${rp(meal-pd)}`,`Harga makanan setelah promo = ${rp(meal-pd)}`),T(`Total = ${rp(meal-pd)} + ${rp(del)} + ${rp(sv)} = ${rp(f)}`,`Total = ${rp(meal-pd)} + ${rp(del)} + ${rp(sv)} = ${rp(f)}`)],
+  hints:[T('Which parts does the promo apply to?','Bagian mana yang mendapat promo?'),T('Discount the food only, then add the fees.','Diskon hanya makanannya, lalu tambahkan biaya.')],
+  traps:[(meal+del+sv)*(100-pr)/100,meal-pd,meal+del+sv],lesson:T('Promos usually cut only the food price. Delivery and service fees are added on top.','Promo biasanya hanya mengurangi harga makanan. Ongkir dan biaya layanan ditambahkan setelahnya.')}};
+G.unit=()=>{const w=pick([200,250,400,500,600,750,1000]),per=pick([500,750,1000,1250,1500,2000,2500,3000]),price=per*w/100,sn=pick(['rice crackers','cooking oil','instant noodles','chocolate','laundry powder']);
+  return{skill:'unit',text:T(`A ${w} g pack of ${sn} costs ${rp(price)}. What is the price per 100 g?`,`Satu bungkus ${itemName(sn)} seberat ${w} g seharga ${rp(price)}. Berapa harga per 100 g?`),answer:per,
+  steps:[T(`${w} g = ${w/100} portions of 100 g`,`${w} g = ${w/100} bagian berukuran 100 g`),T(`${rp(price)} ÷ ${w/100} = ${rp(per)} per 100 g`,`${rp(price)} ÷ ${w/100} = ${rp(per)} per 100 g`)],
+  hints:[T('How many 100 g portions are in the pack?','Ada berapa bagian 100 g dalam satu bungkus?'),T('Divide the price by the number of portions.','Bagi harga dengan jumlah bagiannya.')],
+  traps:[price/(w/100)*2,price/(w/50)],lesson:T('Unit price lets you compare packs of different sizes fairly.','Harga satuan membantu membandingkan kemasan dengan ukuran berbeda secara adil.')}};
+const POOL={1:['discount','tax','unit','discount'],2:['voucher','cashback','fees','discount','unit'],3:['stack','taxdisc','voucher','fees','cashback','stack']};
+const genQ=tier=>G[pick(POOL[Math.max(1,Math.min(3,tier))])]();
+function dailyDateKey(){return new Date().toISOString().slice(0,10)}
+function dailyQuestions(){
+  const original=Math.random;let seed=Number(dailyDateKey().replace(/-/g,''))>>>0;
+  Math.random=()=>{seed=(seed+0x6D2B79F5)|0;let t=seed;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296};
+  try{return[G.discount(),G.voucher(),G.taxdisc()]}finally{Math.random=original}
+}
+function syncDaily(){const date=dailyDateKey();if(S.daily.date!==date){S.daily={date,attempted:[],solved:[],bonusAwarded:false};save()}return S.daily}
+function renderDaily(){const state=syncDaily(),questions=dailyQuestions(),solved=new Set(state.solved);$('#dailyStatus').textContent=state.bonusAwarded?T('Daily bonus claimed: +30 XP. Come back tomorrow.','Bonus harian didapat: +30 XP. Kembali lagi besok.'):T(`${solved.size} of 3 solved today. Finish all three for +30 XP.`,`${solved.size} dari 3 soal selesai hari ini. Selesaikan semuanya untuk bonus +30 XP.`);
+  $('#dailyCards').innerHTML=questions.map((q,i)=>{const done=solved.has(i);return `<article class="daily-card ${done?'solved':''}"><div class="daily-top"><span class="daily-number">${i+1}</span><span class="daily-skill">${skillName(q.skill)}</span></div><p class="daily-question">${q.text}</p><div class="daily-answer"><input id="dailyAnswer${i}" data-daily-answer="${i}" inputmode="numeric" aria-label="${T('Answer in rupiah','Jawaban dalam rupiah')}" placeholder="${T('Answer (Rp)','Jawaban (Rp)') }" ${done?'disabled':''}><button class="btn small" data-daily-check="${i}" ${done?'disabled':''}>${T('Check','Periksa')}</button></div><p class="daily-feedback" id="dailyMessage${i}" aria-live="polite">${done?T('Solved ✓','Selesai ✓'):''}</p></article>`}).join('')}
+function scheduleDailyRefresh(){const now=new Date(),next=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1,0,0,1);setTimeout(()=>{renderDaily();scheduleDailyRefresh()},Math.max(1000,next-Date.now()))}
+function checkDaily(index){const state=syncDaily(),questions=dailyQuestions(),q=questions[index],input=$('#dailyAnswer'+index),message=$('#dailyMessage'+index),value=parseRp(input.value);if(isNaN(value)){message.textContent=T('Enter a number first.','Masukkan angka terlebih dahulu.');return}if(state.solved.includes(index))return;
+  const firstTry=!state.attempted.includes(index),ok=value===Math.round(q.answer);if(firstTry){state.attempted.push(index);save();record(q.skill,ok)}
+  if(!ok){message.textContent=T(`Not quite. ${q.hints[0]}`,`Belum tepat. ${q.hints[0]}`);sfx.bad();return}
+  state.solved.push(index);sfx.good();if(state.solved.length===3&&!state.bonusAwarded){const before=lvlIdx();state.bonusAwarded=true;S.xp+=30;if(lvlIdx()>before)toast(T('Daily set complete! +30 bonus XP. Level up to ','Semua soal harian selesai! Bonus +30 XP. Naik level menjadi ')+rankName());else toast(T('Daily set complete! +30 bonus XP.','Semua soal harian selesai! Bonus +30 XP.'));checkBadges()}
+  save();renderProgress();renderDaily()}
+$('#dailyCards').addEventListener('click',e=>{const button=e.target.closest('[data-daily-check]');if(button)checkDaily(Number(button.dataset.dailyCheck))});
+$('#dailyCards').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-daily-answer]')){e.preventDefault();checkDaily(Number(e.target.dataset.dailyAnswer))}});
+const gran=a=>[5000,1000,500,250,100,50,10,1].find(g=>a%g===0)||1;
+function makeOptions(q){const seen=new Set([q.answer]),out=[q.answer];
+  shuffle((q.traps||[]).map(Math.round)).forEach(t=>{if(out.length<3&&t>0&&!seen.has(t)){seen.add(t);out.push(t)}});
+  const g=gran(q.answer);let guard=0;
+  while(out.length<3&&guard++<60){const t=q.answer+g*pick([-4,-3,-2,-1,1,2,3,4]);if(t>0&&!seen.has(t)){seen.add(t);out.push(t)}}
+  return shuffle(out)}
+
+/* ---------- progress ---------- */
+const RANKS=['Window Shopper','Bargain Hunter','Coupon Cutter','Deal Detective','Savvy Spender','Numerify Master'];
+const RANKS_ID=['Jago Lihat-lihat','Pemburu Promo','Ahli Kupon','Detektif Promo','Pembelanja Cerdas','Master Numerify'];
+const XP_LVL=120;
+const lvlIdx=()=>Math.floor(S.xp/XP_LVL);
+const rankName=()=>T(RANKS[Math.min(lvlIdx(),RANKS.length-1)],RANKS_ID[Math.min(lvlIdx(),RANKS.length-1)]);
+const totalC=()=>Object.values(S.skills).reduce((a,s)=>a+s.c,0);
+const totalA=()=>Object.values(S.skills).reduce((a,s)=>a+s.a,0);
+const BADGES=[
+  {id:'first',name:'First Deal',nameId:'Jawaban Pertama',desc:'Get your first answer right',descId:'Jawab soal pertamamu dengan benar',test:()=>totalC()>=1},
+  {id:'ten',name:'Ten Savings',nameId:'Sepuluh Jawaban',desc:'10 correct answers',descId:'10 jawaban benar',test:()=>totalC()>=10},
+  {id:'trap',name:'Trap Spotter',nameId:'Jeli Melihat Jebakan',desc:'3 stacked-discount answers right',descId:'Jawab 3 soal diskon bertingkat dengan benar',test:()=>((S.skills.stack||{}).c||0)>=3},
+  {id:'flap',name:'Cart Pilot',nameId:'Pilot Troli',desc:'Score 100+ in Flash Flap',descId:'Raih skor 100+ di Flash Flap',test:()=>S.best.flap>=100},
+  {id:'shelf',name:'Receipt Sleuth',nameId:'Detektif Struk',desc:'Score 300+ in Receipt Detective',descId:'Raih skor 300+ di Detektif Struk',test:()=>S.best.shelf>=300},
+  {id:'budget',name:'Budget Boss',nameId:'Jago Anggaran',desc:'Score 300+ in Budget Catch',descId:'Raih skor 300+ di Budget Catch',test:()=>S.best.budget>=300},
+  {id:'mentor',name:'Good Student',nameId:'Murid Tekun',desc:'Ask the AI mentor for help',descId:'Minta bantuan mentor AI',test:()=>S.mentorUses>=1},
+  {id:'streak',name:'3-Day Streak',nameId:'Konsisten 3 Hari',desc:'Practice 3 days in a row',descId:'Berlatih selama 3 hari berturut-turut',test:()=>S.streakDays>=3}
+];
+let toastT=0;
+function toast(msg){let t=$('.toast');if(!t){t=document.createElement('div');t.className='toast';t.setAttribute('role','status');document.body.appendChild(t)}t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{t.hidden=true},3200)}
+function checkBadges(){BADGES.forEach(b=>{if(!S.badges[b.id]&&b.test()){S.badges[b.id]=1;toast(T('Badge unlocked: ','Lencana terbuka: ')+T(b.name,b.nameId))}});save()}
+function today(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()}
+function touchDay(){const t=today();if(S.lastDay===t)return;const y=new Date();y.setDate(y.getDate()-1);const ys=y.getFullYear()+'-'+(y.getMonth()+1)+'-'+y.getDate();S.streakDays=S.lastDay===ys?S.streakDays+1:1;S.lastDay=t;save()}
+function record(skill,ok){touchDay();const s=S.skills[skill]||(S.skills[skill]={a:0,c:0});s.a++;if(ok)s.c++;const before=lvlIdx();S.xp+=ok?10:2;if(lvlIdx()>before)toast(T('Level up! You are now a ','Naik level! Sekarang kamu ')+rankName());checkBadges();renderProgress()}
+function pushMissed(q){S.missed.unshift(q);S.missed=S.missed.slice(0,6);save()}
+function setBest(k,v){if(v>S.best[k])S.best[k]=v;S.plays++;checkBadges();renderProgress()}
+function renderProgress(){
+  $('#chip').textContent=`${T('Lv','Level')} ${lvlIdx()+1} · ${rankName()}`;
+  $('#pLvl').textContent=lvlIdx()+1;$('#pRank').textContent=rankName();
+  const x=S.xp%XP_LVL;$('#pXpBar').style.width=(x/XP_LVL*100)+'%';$('#pXpTxt').textContent=T(`${x} / ${XP_LVL} XP to next level`,`${x} / ${XP_LVL} XP menuju level berikutnya`);
+  $('#pCorrect').textContent=totalC();$('#pAcc').textContent=totalA()?Math.round(totalC()/totalA()*100)+'%':'0%';$('#pStreak').textContent=S.streakDays;
+  $('#pSkills').innerHTML=Object.keys(SKILLS).map(k=>{const s=S.skills[k]||{a:0,c:0};const pc=s.a?Math.round(s.c/s.a*100):0;return `<div class="skillrow"><span>${skillName(k)}</span><div class="meter"><i style="width:${pc}%"></i></div><span>${s.a?pc+'%':'—'}</span></div>`}).join('');
+  $('#pbFlap').textContent=S.best.flap;$('#pbShelf').textContent=S.best.shelf;$('#pbBudget').textContent=S.best.budget;
+  $('#pbShelf').previousElementSibling.textContent=T('Receipt Detective','Detektif Struk');$('#pbBudget').previousElementSibling.textContent=T('Budget Catch','Budget Catch');
+  $('#bestFlap').textContent=T('Best: ','Rekor: ')+S.best.flap;$('#bestShelf').textContent=T('Best: ','Rekor: ')+S.best.shelf;$('#bestBudget').textContent=T('Best: ','Rekor: ')+S.best.budget;
+  $('#pBadges').innerHTML=BADGES.map(b=>`<div class="badge ${S.badges[b.id]?'got':''}"><b>${S.badges[b.id]?'★ ':''}${T(b.name,b.nameId)}</b><span>${T(b.desc,b.descId)}</span></div>`).join('');
+}
+$('#resetBtn').addEventListener('click',()=>{const b=$('#resetBtn');if(b.dataset.arm!=='1'){b.dataset.arm='1';b.textContent=T('Tap again to confirm','Ketuk lagi untuk konfirmasi');$('#resetMsg').textContent=T('This clears XP, scores and badges.','Ini akan menghapus XP, skor, dan lencana.');setTimeout(()=>{b.dataset.arm='0';b.textContent=T('Reset my progress','Atur ulang progres');$('#resetMsg').textContent=''},4000);return}
+  S=defaults();save();b.dataset.arm='0';b.textContent=T('Reset my progress','Atur ulang progres');$('#resetMsg').textContent=T('Progress cleared.','Progres dihapus.');renderProgress();renderDaily()});
+
+/* ---------- hero tag ---------- */
+let heroQ=null;
+function heroNew(){const price=stepR(100000,400000,10000),p=pick([10,20,25,30,40,50]);const d=price*p/100,f=price-d;
+  heroQ={price,p,d,f,skill:'discount'};
+  $('#heroItem').textContent=itemName(pick(ITEMS)).replace(/^./,c=>c.toUpperCase());$('#heroWas').textContent=rp(price);$('#heroOff').textContent=p;
+  $('#heroIn').value='';$('#heroMsg').textContent='';}
+$('#heroNew').addEventListener('click',heroNew);
+function heroCheck(){const v=parseRp($('#heroIn').value);const m=$('#heroMsg');if(isNaN(v)){m.textContent=T('Type your price first.','Masukkan jawabanmu terlebih dahulu.');return}
+  if(v===heroQ.f){m.textContent=T(`Yes! ${heroQ.p}% of ${rp(heroQ.price)} is ${rp(heroQ.d)}, so you pay ${rp(heroQ.f)}.`,`Benar! ${heroQ.p}% dari ${rp(heroQ.price)} adalah ${rp(heroQ.d)}, jadi kamu membayar ${rp(heroQ.f)}.`);sfx.good();record('discount',true)}
+  else{m.textContent=T(`Not yet. Find ${heroQ.p}% of ${rp(heroQ.price)} first, then subtract it.`,`Belum tepat. Hitung ${heroQ.p}% dari ${rp(heroQ.price)} terlebih dahulu, lalu kurangi dari harganya.`);sfx.bad();record('discount',false)}}
+$('#heroGo').addEventListener('click',heroCheck);
+$('#heroIn').addEventListener('keydown',e=>{if(e.key==='Enter')heroCheck()});
+let fk=9;setInterval(()=>{fk=fk<=0?9:fk-1;$('#fakeSec').textContent=String(fk).padStart(2,'0')},1000);
+
+/* ---------- toolkit tabs ---------- */
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>{$$('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b?'true':'false'));['tCalc','tPromo','tFake'].forEach(id=>{$('#'+id).hidden=id!==b.dataset.tab})}));
+
+/* calculator */
+function calc(){
+  const P=num('cPrice'),d1=num('cD1'),d2=num('cD2'),v=num('cV'),mn=num('cMin'),tx=num('cTax'),fee=num('cFee'),est=$('#cEst').value;
+  const rows=[];let cur=P;rows.push([T('Sticker price','Harga awal'),P]);
+  const a=cur*d1/100;if(d1){cur-=a;rows.push([T(`Discount ${d1}%`,`Diskon ${d1}%`),-a,'neg'])}
+  const b=cur*d2/100;if(d2){cur-=b;rows.push([T(`Extra ${d2}% off the new price`,`Diskon tambahan ${d2}% dari harga baru`),-b,'neg'])}
+  let vApplied=0;
+  if(v){if(cur>=mn){vApplied=Math.min(v,cur);cur-=vApplied;rows.push([T('Voucher','Voucher'),-vApplied,'neg'])}else rows.push([T(`Voucher not used (needs ${rp(mn)})`,`Voucher tidak berlaku (minimum ${rp(mn)})`),0,'warn'])}
+  const base=cur;const t=cur*tx/100;if(tx){cur+=t;rows.push([T(`VAT ${tx}%`,`PPN ${tx}%`),t])}
+  if(fee){cur+=fee;rows.push([T('Delivery and admin fees','Ongkir dan biaya admin'),fee])}
+  const total=cur,saved=P-base,eff=P?saved/P*100:0;
+  let h=`<h4>${T('Your receipt','Rincian belanja')}</h4>`+rows.map(r=>`<div class="rrow ${r[2]||''}"><span>${r[0]}</span><span>${r[1]===0&&r[2]==='warn'?'':rp(r[1])}</span></div>`).join('');
+  h+=`<div class="rrow total"><span>${T('You pay','Total bayar')}</span><span>${rp(total)}</span></div>`;
+  h+=`<div class="rnote">${T(`Discounts and voucher saved you ${rp(saved)} (${+eff.toFixed(1)}% of the sticker price)${d1&&d2?`. That is not ${d1+d2}%, because the second discount is smaller.`:'.'}`,`Diskon dan voucher menghemat ${rp(saved)} (${+eff.toFixed(1)}% dari harga awal)${d1&&d2?`. Totalnya bukan ${d1+d2}% karena diskon kedua dihitung dari harga yang lebih rendah.`:'.'}`)}</div>`;
+  $('#cReceipt').innerHTML=h;
+  const m=$('#cEstMsg');
+  if(est!==''&&total>0){const e=parseFloat(est),diff=e-total,pc=Math.abs(diff)/total*100;m.hidden=false;
+    m.textContent=Math.abs(diff)<1?T('Spot on. Your mental math matches the receipt.','Tepat sekali. Hitunganmu cocok dengan rincian belanja.'):T(`Your estimate was ${rp(Math.abs(diff))} (${+pc.toFixed(1)}%) too ${diff>0?'high':'low'}. ${pc<=5?'Within 5% is a strong mental-math estimate.':'Redo it step by step and compare each line above.'}`,`Perkiraanmu berbeda ${rp(Math.abs(diff))} (${+pc.toFixed(1)}%) terlalu ${diff>0?'tinggi':'rendah'}. ${pc<=5?'Selisih di bawah 5% menunjukkan perkiraan mental yang bagus.':'Hitung ulang langkah demi langkah dan bandingkan tiap baris di atas.'}`)}
+  else m.hidden=true;
+}
+['cPrice','cD1','cD2','cV','cMin','cTax','cFee','cEst'].forEach(id=>$('#'+id).addEventListener('input',calc));
+
+/* promo checker */
+const PF=[['price','Sticker price (Rp)','Harga awal (Rp)'],['d1','Discount (%)','Diskon (%)'],['d2','Extra discount (%)','Diskon tambahan (%)'],['v','Voucher (Rp)','Voucher (Rp)'],['vmin','Voucher min spend (Rp)','Minimum belanja voucher (Rp)'],['cb','Cashback (%)','Cashback (%)'],['cap','Cashback cap (Rp)','Batas cashback (Rp)'],['fee','Delivery + admin fees (Rp)','Ongkir + biaya admin (Rp)']];
+const PDEF={a:{price:250000,d1:30,d2:20,v:0,vmin:0,cb:0,cap:0,fee:10000},b:{price:250000,d1:45,d2:0,v:0,vmin:0,cb:0,cap:0,fee:15000}};
+['a','b'].forEach(k=>{$('#pf'+k.toUpperCase()).innerHTML=PF.map(f=>`<div class="field"><label for="${k}_${f[0]}">${language==='id'?f[2]:f[1]}</label><input id="${k}_${f[0]}" type="number" inputmode="decimal" min="0" value="${PDEF[k][f[0]]}"></div>`).join('');
+  PF.forEach(f=>$('#'+k+'_'+f[0]).addEventListener('input',promo))});
+function offerCalc(k){const g=n=>num(k+'_'+n);const P=g('price'),d1=g('d1'),d2=g('d2'),v=g('v'),vmin=g('vmin'),cb=g('cb'),cap=g('cap'),fee=g('fee');
+  let after=P*(100-d1)/100*(100-d2)/100;const flags=[];
+  if(d1&&d2)flags.push(T(`Stacked ${d1}% + ${d2}% = ${+(100-(100-d1)*(100-d2)/100).toFixed(1)}% off, not ${d1+d2}%.`,`Diskon bertingkat ${d1}% + ${d2}% = ${+(100-(100-d1)*(100-d2)/100).toFixed(1)}%, bukan ${d1+d2}%.`));
+  if(v){if(after>=vmin){after-=Math.min(v,after)}else flags.push(T(`Voucher not applied: ${rp(after)} is below the ${rp(vmin)} minimum.`,`Voucher tidak berlaku: ${rp(after)} kurang dari minimum ${rp(vmin)}.`))}
+  const upfront=after+fee;const cash=cb?Math.min(after*cb/100,cap||Infinity):0;
+  if(cb)flags.push(T(`Cashback comes later. You still pay ${rp(upfront)} up front.`+(cap&&after*cb/100>cap?` The cap cuts it to ${rp(cash)}.`:''),`Cashback diterima belakangan. Kamu tetap membayar ${rp(upfront)} di awal.`+(cap&&after*cb/100>cap?` Batas cashback menguranginya menjadi ${rp(cash)}.`:'')));
+  if(P&&fee/P>0.1)flags.push(T(`Fees are ${Math.round(fee/P*100)}% of the sticker price.`,`Biaya tambahan sebesar ${Math.round(fee/P*100)}% dari harga awal.`));
+  return{real:upfront-cash,upfront,flags,P}}
+function promo(){const A=offerCalc('a'),B=offerCalc('b');
+  [['A',A],['B',B]].forEach(([n,o])=>{$('#p'+n).innerHTML=`<div>${T('Real cost','Biaya sebenarnya')}</div><div class="real">${rp(o.real)}</div>${o.flags.length?`<ul class="flags">${o.flags.map(f=>`<li>${f}</li>`).join('')}</ul>`:''}`});
+  const diff=Math.abs(A.real-B.real);const win=A.real<B.real?'A':B.real<A.real?'B':'';
+  $$('.offer')[0].classList.toggle('win',win==='A');$$('.offer')[1].classList.toggle('win',win==='B');
+  $('#pVerdict').textContent=win?T(`Offer ${win} is cheaper by ${rp(diff)}. Compare the real cost, not the biggest banner.`,`Promo ${win} lebih murah ${rp(diff)}. Bandingkan biaya sebenarnya, bukan angka terbesar di banner.`):T('Both offers cost the same.','Kedua promo memiliki harga yang sama.')}
+
+/* fake discount */
+function fake(){const o=num('fOrig'),s=num('fSale'),c=num('fClaim');const real=o?(o-s)/o*100:0;const gap=c-real;
+  let h=`<h4>${T('Discount check','Cek diskon')}</h4><div class="rrow"><span>${T('Banner says','Klaim banner')}</span><span>${+c.toFixed(1)}% ${T('off','diskon')}</span></div><div class="rrow"><span>${T('Real discount','Diskon sebenarnya')}</span><span>${+real.toFixed(1)}% ${T('off','diskon')}</span></div><div class="rrow"><span>${T('You save','Hemat')}</span><span>${rp(o-s)}</span></div>`;
+  h+=`<div class="rrow total"><span>${gap>1?T('Overstated','Dilebih-lebihkan'):gap<-1?T('Better than claimed','Lebih baik dari klaim') :T('Honest','Sesuai')}</span><span>${gap>1?'+'+(+gap.toFixed(1))+' pts':gap<-1?(+(-gap).toFixed(1))+' pts':'✓'}</span></div>`;
+  h+=`<div class="rnote">${gap>1?T('The banner promises more than the prices deliver. Also check if the crossed-out price was ever real.','Banner menjanjikan diskon lebih besar daripada harga sebenarnya. Periksa juga apakah harga awalnya benar-benar pernah berlaku.'):T('The banner matches the prices. Still ask: would you buy it at the normal price?','Klaim banner sesuai dengan harganya. Tetap tanyakan: apakah kamu akan membelinya dengan harga normal?')}</div>`;
+  $('#fOut').innerHTML=h}
+['fOrig','fSale','fClaim'].forEach(id=>$('#'+id).addEventListener('input',fake));
+
+/* ---------- AI + mentor ---------- */
+let ai=null;
+function aiBadge(){const b=$('#aiBadge');b.textContent=ai?T('Mentor AI: connected','Mentor AI: terhubung'):T('Built-in hints only','Petunjuk bawaan saja');b.classList.toggle('on',!!ai)}
+(async()=>{try{if(window.claude&&window.claude.use)ai=await window.claude.use('sample')}catch(e){ai=null}aiBadge()})();
+
+const Mentor=(()=>{
+  let q=null,attempts=0,hints=0,solved=false,showed=false;
+  const log=$('#mLog');
+  function addMsg(who,text,cls){const d=document.createElement('div');d.className='msg '+who+(cls?' '+cls:'');d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+  function sys(){return language==='id'?`Kamu adalah Mentor Numerify, pelatih numerasi yang ramah untuk remaja Indonesia (kelas 10-12). Gunakan bahasa Indonesia sederhana, maksimal 80 kata, tanpa judul atau markdown. Mata uang rupiah (Rp). Soal: "${q.text}". Jawaban benar yang telah diverifikasi adalah ${rp(q.answer)}; jangan mengarang angka lain.`:`You are Numerify's Mentor, a warm numeracy coach for Indonesian teenagers (grades 10-12). Use simple English, under 80 words, no headings, no markdown. Currency is rupiah (Rp). Case: "${q.text}". The verified correct answer is ${rp(q.answer)}; never invent other numbers.`}
+  async function ask(prompt,fallback,cls){
+    if(!ai){addMsg('mentor',fallback,cls);return}
+    const el=addMsg('mentor',T('Thinking…','Sedang berpikir…'),cls);
+    try{S.mentorUses=(S.mentorUses||0)+1;save();checkBadges();
+      const r=await ai(prompt,{modelTier:'quick',onText:({text})=>{el.textContent=text;log.scrollTop=log.scrollHeight}});
+      if(r&&r.text)el.textContent=r.text}
+    catch(e){el.textContent=(e&&e.code==='rate_limited')?T('Too many requests. Wait a few seconds, then ask again.','Terlalu banyak permintaan. Tunggu sebentar, lalu coba lagi.'):fallback;
+      if(e&&e.code==='not_granted'){ai=null;aiBadge()}}
+    log.scrollTop=log.scrollHeight}
+  function setCase(nq,intro,silent){q=nq;attempts=0;hints=0;solved=false;showed=false;
+    $('#mSkill').textContent=skillName(q.skill);$('#mCase').textContent=q.text;$('#mAnswer').value='';$('#mSteps').hidden=true;$('#mSteps').innerHTML='';
+    if(!silent)addMsg('mentor',intro||T('New case ready. Try it on paper first, then type your answer.','Soal baru siap. Coba hitung dulu, lalu masukkan jawabanmu.'))}
+  function newCase(){const t=$('#mTopic').value;setCase(t==='mixed'?genQ(rnd(1,3)):G[t](),T('New case ready. Try it on paper first, then type your answer.','Soal baru siap. Coba hitung dulu, lalu masukkan jawabanmu.'))}
+  function check(){if(!q)return;const v=parseRp($('#mAnswer').value);if(isNaN(v)){addMsg('mentor',T('Type a number first. Rupiah only, no need for dots.','Masukkan angka terlebih dahulu. Cukup angka rupiah tanpa titik.'));return}
+    attempts++;addMsg('you',rp(v));const ok=v===q.answer;if(attempts===1)record(q.skill,ok);
+    if(ok){solved=true;sfx.good();addMsg('mentor',T(`Correct! ${rp(q.answer)} is right.`,`Benar! Jawabannya ${rp(q.answer)}.`),'good');
+      ask(sys()+T(` The student solved it. In 2 short sentences, say what they did well, then give one real-life shopping tip for spotting this kind of trick.`,` Siswa berhasil menjawab. Dalam 2 kalimat singkat, puji langkah yang tepat lalu berikan satu tips belanja nyata untuk mengenali trik ini.`),T(`Tip: ${q.lesson}`,`Tips: ${q.lesson}`),'good')}
+    else{sfx.bad();if(attempts===1)pushMissed(q);
+      const isTrap=(q.traps||[]).some(t=>Math.round(t)===v);
+        const fb=isTrap?T(`Not quite. ${q.lesson}`,`Belum tepat. ${q.lesson}`):T(`Not quite. ${q.hints[0]}`,`Belum tepat. ${q.hints[0]}`);
+        ask(sys()+T(` The student answered ${rp(v)}, which is wrong. Do NOT reveal the correct answer or full solution. Name the likely mistake in one sentence, then ask ONE guiding question.`,` Siswa menjawab ${rp(v)}, tetapi jawabannya salah. Jangan berikan jawaban benar atau solusi lengkap. Sebutkan kemungkinan kesalahan dalam satu kalimat, lalu ajukan SATU pertanyaan pemandu.`),fb,'bad')}}
+      function hint(){if(!q)return;const h=q.hints[Math.min(hints,q.hints.length-1)];hints++;addMsg('mentor',T('Hint ','Petunjuk ')+hints+': '+h)}
+      function solution(){if(!q)return;if(attempts<1&&!solved){addMsg('mentor',T('Give it one try first. You can use a hint if you are stuck.','Coba jawab sekali dulu. Gunakan petunjuk jika kamu kesulitan.'));return}
+    showed=true;const st=$('#mSteps');st.hidden=false;st.innerHTML=q.steps.map(s=>`<li>${s}</li>`).join('')+`<li><b>${T('Answer','Jawaban')}: ${rp(q.answer)}</b></li>`;
+    if(!solved)ask(sys()+T(` The student is looking at the solution steps: ${q.steps.join(' | ')}. Explain in plain words why the answer is ${rp(q.answer)}, then give one tip to avoid this trap.`,` Siswa sedang melihat langkah solusi: ${q.steps.join(' | ')}. Jelaskan dengan sederhana mengapa jawabannya ${rp(q.answer)}, lalu berikan satu tips agar tidak terjebak.`),T(`Why: ${q.lesson}`,`Alasan: ${q.lesson}`))}
+  function send(){const t=$('#mAsk').value.trim();if(!t)return;$('#mAsk').value='';addMsg('you',t);
+    if(!q){addMsg('mentor',T('Start a case first, then ask me about it.','Mulai dengan sebuah soal, lalu tanyakan tentang soal itu.'));return}
+    ask(sys()+T(` The student asks: "${t.slice(0,300)}". The case is ${solved||showed?'already solved':'NOT solved yet'}. ${solved||showed?'You may explain fully.':'Do NOT give the final answer. Give a hint or a guiding question instead.'}`,` Siswa bertanya: "${t.slice(0,300)}". Soal ini ${solved||showed?'sudah dijawab':'belum dijawab'}. ${solved||showed?'Kamu boleh menjelaskan sepenuhnya.':'Jangan berikan jawaban akhir. Berikan petunjuk atau pertanyaan pemandu.'}`),
+      ai?'':T('Mentor AI is not connected here. Try the Hint button, or Show solution after one attempt.','Mentor AI belum terhubung. Coba tombol Petunjuk atau Lihat solusi setelah satu kali mencoba.'))}
+  function loadMissed(){if(!S.missed.length){addMsg('mentor',T('No missed questions yet. Play a game first.','Belum ada soal yang salah. Mainkan permainan terlebih dahulu.'));return false}
+    const m=S.missed.shift();save();setCase(m,T('Let us look at one you missed. Take another careful try.','Mari bahas soal yang sempat salah. Coba sekali lagi dengan teliti.'));return true}
+  $('#mCheck').addEventListener('click',check);
+  $('#mAnswer').addEventListener('keydown',e=>{if(e.key==='Enter')check()});
+  $('#mHint').addEventListener('click',hint);$('#mSolution').addEventListener('click',solution);$('#mNew').addEventListener('click',newCase);
+  $('#mMissed').addEventListener('click',loadMissed);$('#mSend').addEventListener('click',send);
+  $('#mAsk').addEventListener('keydown',e=>{if(e.key==='Enter')send()});
+  $('#mTopic').innerHTML=`<option value="mixed">${T('Mixed','Campuran')}</option>`+Object.keys(G).map(k=>`<option value="${k}">${skillName(k)}</option>`).join('');
+  $('#mTopic').addEventListener('change',newCase);
+  return{setCase,newCase,loadMissed,addMsg,refresh(){
+    const greetings=['Hi! I am your mentor. I check the numbers; you do the thinking. Solve this one, or switch topic.','Hai! Aku mentor Numerify. Aku memeriksa hitungannya, kamu yang berpikir. Jawab soal ini atau pilih topik lain.'];
+    const first=log.querySelector('.msg.mentor');if(first&&greetings.includes(first.textContent))first.textContent=language==='id'?greetings[1]:greetings[0];
+    if(q){const topic=$('#mTopic').value;setCase(topic==='mixed'?genQ(rnd(1,3)):G[topic](),' ',true)}
+  }}
+})();
+
+$$('[data-trick]').forEach(button=>button.addEventListener('click',()=>{
+  const topic=button.dataset.trick;
+  if(topic==='fake'){$('[data-tab="tFake"]').click();$('#toolkit').scrollIntoView({behavior:'smooth'});$('#fOrig').focus({preventScroll:true});return}
+  $('#mTopic').value=topic;Mentor.newCase();$('#mentor').scrollIntoView({behavior:'smooth'});$('#mAnswer').focus({preventScroll:true});
+}));
+
+/* ---------- stage control ---------- */
+const stage=$('#stage');let activeGame=null;
+const TITLES={flap:'Flash Flap',shelf:'Receipt Detective',budget:'Budget Catch'};
+const TITLES_ID={flap:'Flash Flap',shelf:'Detektif Struk',budget:'Budget Catch'};
+function openGame(k){activeGame=k;$('#stageTitle').textContent=T(TITLES[k],TITLES_ID[k]);stage.hidden=false;document.documentElement.style.overflow='hidden';
+  $('#gFlap').hidden=k!=='flap';$('#gShelf').hidden=k!=='shelf';$('#gBudget').hidden=k!=='budget';
+  ({flap:Flap,shelf:Shelf,budget:Budget})[k].open();$('.stage-body').scrollTop=0}
+function closeGame(){({flap:Flap,shelf:Shelf,budget:Budget}[activeGame]||{stop(){}}).stop();stage.hidden=true;document.documentElement.style.overflow='';activeGame=null;renderProgress()}
+$$('[data-play]').forEach(b=>b.addEventListener('click',()=>openGame(b.dataset.play)));
+$('#stageClose').addEventListener('click',closeGame);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!stage.hidden)closeGame()});
+function reviewMissed(){closeGame();Mentor.loadMissed();$('#mentor').scrollIntoView()}
+document.addEventListener('click',e=>{if(e.target&&e.target.matches('[data-review]'))reviewMissed();if(e.target&&e.target.matches('[data-again]')){const k=e.target.dataset.again;({flap:Flap,shelf:Shelf,budget:Budget})[k].open()}});
+
+/* ---------- GAME 1: Flash Flap ---------- */
+const Flap=(()=>{
+  const W=960,H=540,R=15,GAP=116,WW=104,BX=210;
+  const el={q:$('#flapQ'),score:$('#flapScore'),lives:$('#flapLives'),streak:$('#flapStreak'),msg:$('#flapMsg'),ov:$('#flapOv'),cv:$('#flapCv')};
+  const ctx=el.cv.getContext('2d');let raf=0,last=0,st=null,col={};
+  function setup(){const dpr=Math.min(window.devicePixelRatio||1,2);el.cv.width=W*dpr;el.cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim();
+    col={bg:g('--surface'),ink:g('--ink'),tag:g('--tag'),sale:g('--sale'),sky:g('--sky'),line:g('--line'),tagInk:g('--tag-ink')}}
+  const fresh=()=>({mode:'ready',y:H/2,vy:0,wall:null,q:null,lives:3,score:0,streak:0,solved:0,spawn:20,inv:0,shake:0,t:0});
+  const tier=()=>Math.min(3,1+Math.floor(st.solved/4));
+  const speed=()=>2+Math.min(1.3,st.solved*.08);
+  function hud(){el.score.textContent=st.score;el.streak.textContent=st.streak;el.lives.textContent='♥'.repeat(Math.max(0,st.lives))+'♡'.repeat(Math.max(0,3-st.lives))}
+  function say(c,t){el.msg.className='g-msg '+c;el.msg.textContent=t}
+  function showReady(){el.ov.hidden=false;el.ov.innerHTML=`<h3>Flash Flap</h3><p>${T('Tap, click or press Space to flap. Fly through the gap with the <b>correct final price</b>. A wrong gap or a shelf costs a heart.','Ketuk, klik, atau tekan Spasi untuk mengepakkan sayap. Lewati celah dengan <b>harga akhir yang benar</b>. Salah memilih atau menabrak rak mengurangi satu nyawa.')}</p><button class="btn" id="flapGo">${T('Start','Mulai')}</button>`;$('#flapGo').addEventListener('click',start)}
+  function open(){cancelAnimationFrame(raf);setup();st=fresh();hud();el.q.textContent=T('Press Start, then flap your cart.','Tekan Mulai, lalu terbangkan troli.');say('','');showReady();last=performance.now();raf=requestAnimationFrame(loop)}
+  function stop(){cancelAnimationFrame(raf);raf=0}
+  function start(){st=fresh();st.mode='play';el.ov.hidden=true;el.ov.innerHTML='';hud();say('','');el.q.textContent=T('Get ready…','Bersiap…');flap()}
+  function flap(){if(!st||st.mode!=='play')return;st.vy=-7.4;sfx.flap()}
+  function spawnWall(){const q=genQ(tier()),vals=makeOptions(q);st.q=q;
+    st.wall={x:W+30,gaps:[90,270,450].map((cy,i)=>({cy,label:rp(vals[i])})),correct:vals.indexOf(q.answer),passed:null,done:false};
+    el.q.textContent=q.text}
+  function hit(msg){st.lives--;st.streak=0;st.shake=12;sfx.bad();hud();if(st.lives<=0)return end();
+    st.y=H/2;st.vy=0;st.inv=70;if(st.wall){st.wall.x=W+60;st.wall.passed=null}say('bad',msg||T('Ouch! Mind the shelves. Same question, try again.','Aduh! Hindari rak. Soalnya tetap sama, coba lagi.'))}
+  function resolve(){const w=st.wall,q=st.q;w.done=true;const ok=w.passed===w.correct;
+    if(ok){st.streak++;st.solved++;st.score+=10+Math.min(st.streak-1,5)*2;sfx.good();say('good',T(`✓ ${rp(q.answer)}. ${q.steps[q.steps.length-1]}`,`✓ ${rp(q.answer)}. ${q.steps[q.steps.length-1]}`))}
+    else{st.lives--;st.streak=0;pushMissed(q);sfx.bad();say('bad',T(`✗ The correct price was ${rp(q.answer)}. ${q.lesson}`,`✗ Harga yang benar ${rp(q.answer)}. ${q.lesson}`))}
+    record(q.skill,ok);hud();st.wall=null;if(st.lives<=0)return end();st.spawn=90}
+  function end(){st.mode='over';setBest('flap',st.score);
+    el.ov.hidden=false;el.ov.innerHTML=`<h3>${T('Game over','Permainan selesai')}</h3><p>${T('Score','Skor')} <b>${st.score}</b> · ${T('Best','Rekor')} <b>${S.best.flap}</b></p><div class="row" style="justify-content:center"><button class="btn" data-again="flap">${T('Play again','Main lagi')}</button>${S.missed.length?`<button class="btn alt" data-review>${T('Review a mistake','Ulangi soal yang salah')}</button>`:''}</div>`}
+  function update(dt){
+    st.t+=dt*(st.wall?speed():1);st.vy=Math.min(st.vy+.5*dt,9);st.y+=st.vy*dt;if(st.y<R){st.y=R;st.vy=0}
+    if(st.inv>0)st.inv-=dt;
+    if(!st.wall){st.spawn-=dt;if(st.spawn<=0)spawnWall()}
+    else{const w=st.wall;w.x-=speed()*dt;
+      const ov=BX+R-3>w.x&&BX-R+3<w.x+WW;
+      if(ov){const gi=w.gaps.findIndex(g=>st.y-R+4>=g.cy-GAP/2&&st.y+R-4<=g.cy+GAP/2);
+        if(gi>=0)w.passed=gi;else if(st.inv<=0){hit();return}}
+      else if(w.x+WW<BX-R&&!w.done)resolve()}
+    if(st&&st.mode==='play'&&st.y>H-R)hit(T('Ouch! The floor costs a heart. Keep flapping.','Aduh! Lantai mengurangi satu nyawa. Terus mengepak.'))}
+  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+  function draw(){ctx.save();ctx.clearRect(0,0,W,H);
+    if(st.shake>0){ctx.translate((Math.random()-.5)*7,(Math.random()-.5)*7);st.shake--}
+    ctx.fillStyle=col.bg;ctx.fillRect(-10,-10,W+20,H+20);
+    ctx.strokeStyle=col.line;ctx.lineWidth=2;ctx.setLineDash([12,16]);ctx.lineDashOffset=-(st.t*2)%28;
+    for(let y=60;y<H;y+=90){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.setLineDash([]);
+    if(st.wall){const w=st.wall;const segs=[];let prev=0;w.gaps.forEach(g=>{segs.push([prev,g.cy-GAP/2]);prev=g.cy+GAP/2});segs.push([prev,H]);
+      segs.forEach(([a,b])=>{if(b<=a)return;ctx.save();rr(w.x,a,WW,b-a,10);ctx.fillStyle=col.sale;ctx.fill();ctx.clip();ctx.strokeStyle='rgba(255,255,255,.28)';ctx.lineWidth=6;
+        for(let k=0;k<(b-a)+WW;k+=22){ctx.beginPath();ctx.moveTo(w.x-2,a+k);ctx.lineTo(w.x+WW+2,a+k-WW-4);ctx.stroke()}ctx.restore();
+        rr(w.x,a,WW,b-a,10);ctx.lineWidth=3;ctx.strokeStyle=col.ink;ctx.stroke()});
+      w.gaps.forEach(g=>{const bw=WW-6,bh=32;rr(w.x+3,g.cy-bh/2,bw,bh,9);ctx.fillStyle=col.tag;ctx.fill();ctx.lineWidth=2.5;ctx.strokeStyle=col.ink;ctx.stroke();
+        let fs=14;ctx.font=`800 ${fs}px "Bricolage Grotesque",system-ui,sans-serif`;while(ctx.measureText(g.label).width>bw-10&&fs>8){fs--;ctx.font=`800 ${fs}px "Bricolage Grotesque",system-ui,sans-serif`}
+        ctx.fillStyle=col.tagInk;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(g.label,w.x+WW/2,g.cy+1)})}
+    const by=st.mode==='ready'?H/2+Math.sin(performance.now()/260)*8:st.y;
+    ctx.save();ctx.translate(BX,by);ctx.rotate(Math.max(-.5,Math.min(.9,st.vy*.06)));
+    if(st.inv>0&&Math.floor(st.inv/5)%2)ctx.globalAlpha=.35;
+    ctx.font='34px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🛒',0,2);ctx.restore();
+    ctx.restore()}
+  function loop(ts){raf=requestAnimationFrame(loop);const dt=Math.min(2.5,(ts-last)/16.667||1);last=ts;if(st.mode==='play')update(dt);draw()}
+  const wrap=el.cv.parentElement;
+  wrap.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;e.preventDefault();flap()});
+  document.addEventListener('keydown',e=>{if(stage.hidden||activeGame!=='flap')return;if(e.code==='Space'||e.code==='ArrowUp'||e.code==='KeyW'){if(e.target&&e.target.tagName==='BUTTON'&&st.mode!=='play')return;e.preventDefault();flap()}});
+  return{open,stop}
+})();
+
+/* ---------- GAME 2: Receipt Detective ---------- */
+const Shelf=(()=>{
+  const TOTAL=5;let st=null;
+  const el={round:$('#shelfRound'),score:$('#shelfScore'),q:$('#shelfQ'),brand:$('#shelfBrand'),number:$('#shelfNumber'),progress:$('#shelfProgress'),lines:$('#shelfLines'),msg:$('#shelfMsg'),next:$('#shelfNext'),play:$('#shelfPlay'),end:$('#shelfEnd')};
+  function makeReceipt(){
+    const items=Array.from({length:3},()=>{const item=pick(ITEMS),qty=pick([2,3]),unit=stepR(15000,60000,5000);return{item,qty,unit,amount:qty*unit}});
+    const subtotal=items.reduce((sum,item)=>sum+item.amount,0),pct=pick([10,15,20]),discount=Math.round(subtotal*pct/100),after=subtotal-discount,vat=Math.round(after*.11),total=after+vat;
+    const rows=items.map(item=>({label:`${itemName(item.item).replace(/^./,c=>c.toUpperCase())} · ${item.qty} × ${rp(item.unit)}`,amount:item.amount,skill:'unit'}));
+    rows.push({label:T('Subtotal','Subtotal'),amount:subtotal,skill:'unit'});
+    rows.push({label:T(`Discount ${pct}%`,`Diskon ${pct}%`),amount:-discount,skill:'discount'});
+    rows.push({label:T('VAT 11%','PPN 11%'),amount:vat,skill:'tax'});
+    rows.push({label:T('TOTAL','TOTAL'),amount:total,skill:'fees',total:true});
+    const error=rnd(0,rows.length-1),delta=pick([5000,10000]);rows[error].shown=rows[error].amount+(rows[error].amount<0?-delta:delta);
+    rows.forEach((row,i)=>{if(i!==error)row.shown=row.amount});return{rows,error}
+  }
+  function open(){st={round:0,score:0,locked:false,receipt:null};el.play.hidden=false;el.end.hidden=true;nextRound()}
+  function stop(){}
+  function nextRound(){st.receipt=makeReceipt();st.locked=false;el.round.textContent=st.round+1;el.score.textContent=st.score;el.q.textContent=T('Exactly one line is wrong. Each line should follow from the lines above it. Tap it.','Hanya ada satu baris yang salah. Setiap baris harus sesuai dengan hitungan sebelumnya. Ketuk baris itu.');el.msg.className='g-msg';el.msg.textContent='';el.brand.textContent=pick(['SARI MART','NUSA MART','TIGA MART']);const receiptNo=rnd(1000,9999);el.number.textContent=T(`Receipt #${receiptNo}`,`Struk #${receiptNo}`);el.next.hidden=true;el.progress.style.width=((st.round+1)/TOTAL*100)+'%';el.progress.parentElement.setAttribute('aria-valuenow',st.round+1);
+    el.lines.innerHTML=st.receipt.rows.map((row,i)=>`<button class="receipt-line ${row.total?'total':''}" data-line="${i}"><span class="line-label">${row.label}</span><span class="line-value">${rp(row.shown)}</span></button>${i===2||i===st.receipt.rows.length-2?'<div class="receipt-divider"></div>':''}`).join('')}
+  function choose(i){if(st.locked)return;st.locked=true;const ok=i===st.receipt.error;if(ok)st.score+=100;el.score.textContent=st.score;
+    $$('.receipt-line',el.lines).forEach((line,index)=>{line.disabled=true;if(index===st.receipt.error)line.classList.add('bad');if(index===i&&ok)line.classList.add('good');if(index===i&&!ok)line.classList.add('bad');if(index===st.receipt.error)line.querySelector('.line-value').insertAdjacentHTML('beforeend',`<small>${T('Correct: ','Seharusnya: ')}${rp(st.receipt.rows[index].amount)}</small>`)});
+    el.msg.className='g-msg '+(ok?'good':'bad');el.msg.textContent=ok?T('Exactly. That line is the mistake. +100 points.','Tepat. Baris itu yang salah. +100 poin.'):T(`Not that line. The incorrect amount is ${rp(st.receipt.rows[st.receipt.error].shown)}; it should be ${rp(st.receipt.rows[st.receipt.error].amount)}.`,`Bukan baris itu. Angka yang salah adalah ${rp(st.receipt.rows[st.receipt.error].shown)}; seharusnya ${rp(st.receipt.rows[st.receipt.error].amount)}.`);record(st.receipt.rows[st.receipt.error].skill,ok);sfx[ok?'good':'bad']();el.next.hidden=false;el.next.textContent=st.round+1===TOTAL?T('See results','Lihat hasil'):T('Next receipt','Struk berikutnya');el.next.focus()}
+  function finish(){el.play.hidden=true;el.end.hidden=false;setBest('shelf',st.score);el.end.innerHTML=`<h3>${T('Case closed','Kasus selesai')}</h3><div class="big">${st.score}</div><p>${T(`Best ${S.best.shelf} · Five receipts reviewed.`,`Rekor ${S.best.shelf} · Lima struk telah diperiksa.`)}</p><div class="row" style="justify-content:center;margin-top:18px"><button class="btn" data-again="shelf">${T('Open another case','Buka kasus lagi')}</button></div>`}
+  el.lines.addEventListener('click',e=>{const line=e.target.closest('[data-line]');if(line)choose(Number(line.dataset.line))});
+  el.next.addEventListener('click',()=>{st.round++;if(st.round>=TOTAL)finish();else nextRound()});
+  return{open,stop}
+})();
+
+/* ---------- GAME 3: Budget Catch ---------- */
+const Budget=(()=>{
+  const TOTAL=3,W=960,H=540,BASKET_Y=H-58,BASKET_W=118;let st=null,raf=0,last=0,col={};
+  const el={round:$('#budgetRound'),score:$('#budgetScore'),caught:$('#budgetCaught'),q:$('#budgetQ'),target:$('#budgetTarget'),total:$('#budgetTotal'),cv:$('#budgetCv'),ov:$('#budgetOv'),msg:$('#budgetMsg'),next:$('#budgetNext'),play:$('#budgetPlay'),end:$('#budgetEnd')};
+  const ctx=el.cv.getContext('2d');
+  function setup(){const dpr=Math.min(window.devicePixelRatio||1,2);el.cv.width=W*dpr;el.cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim();col={bg:g('--surface'),ink:g('--ink'),line:g('--line'),tag:g('--tag'),tagInk:g('--tag-ink'),sale:g('--sale'),mint:g('--mint')}}
+  function makeItem(target){const item=pick(ITEMS),sticker=stepR(25000,80000,5000),pct=pick([0,10,20,25,30]);return{item,sticker,pct,price:Math.round(sticker*(100-pct)/100/1000)*1000,target,x:rnd(90,W-90),y:-40,speed:1.8+Math.random()*.7}}
+  function open(){stop();setup();st={round:0,score:0,total:0,target:0,cartX:W/2,items:[],queue:[],tick:0,mode:'ready'};el.play.hidden=false;el.end.hidden=true;nextRound();showReady();last=performance.now();raf=requestAnimationFrame(loop)}
+  function stop(){cancelAnimationFrame(raf);raf=0}
+  function showReady(){el.ov.hidden=false;el.ov.innerHTML=`<h3>Budget Catch</h3><p>${T('Steer with ← → or A/D. On touch screens, drag across the playfield. Catch discounted items whose final prices add up to the target exactly. Going over ends the round.','Arahkan troli dengan ← → atau A/D. Di layar sentuh, geser di area permainan. Tangkap barang diskon hingga total harga akhirnya tepat sesuai target. Jika melewati target, putaran berakhir.')}</p><button class="btn" id="budgetGo">${T('Start catching','Mulai menangkap')}</button>`;$('#budgetGo').addEventListener('click',start)}
+  function nextRound(){const planned=Array.from({length:3},()=>makeItem(true));st.target=planned.reduce((sum,item)=>sum+item.price,0);st.total=0;st.caught=0;st.items=[];st.queue=shuffle(planned.concat(Array.from({length:4},()=>makeItem(false))));st.tick=24;st.cartX=W/2;st.mode='ready';el.round.textContent=st.round+1;el.score.textContent=st.score;el.caught.textContent=st.caught;el.target.textContent=rp(st.target);el.total.textContent=rp(0);el.q.textContent=T('Catch items whose discounted prices add up to the target. Work out each sale tag before it reaches your cart.','Tangkap barang hingga harga setelah diskon tepat sesuai target. Hitung harga setiap promo sebelum barang mencapai troli.');el.msg.className='g-msg';el.msg.textContent=T('The sale tag shows the sticker price and discount, not the final price.','Label promo menunjukkan harga awal dan diskon, bukan harga akhirnya.');el.next.hidden=true}
+  function start(){st.mode='play';el.ov.hidden=true;el.ov.innerHTML='';el.msg.textContent=T('Catch the exact total. Avoid going over.','Tangkap hingga totalnya tepat. Jangan sampai berlebih.');sfx.good()}
+  function endRound(ok,over){if(st.mode!=='play')return;st.mode='settled';if(ok){st.score+=100;el.score.textContent=st.score;el.msg.className='g-msg good';el.msg.textContent=T(`Exact match! ${rp(st.total)} hits the target. +100 points.`,`Tepat! ${rp(st.total)} sesuai target. +100 poin.`);sfx.good()}else{el.msg.className='g-msg bad';el.msg.textContent=over?T(`Over budget! ${rp(st.total)} passed the ${rp(st.target)} target. This round is lost.`,`Anggaran terlewati! ${rp(st.total)} melebihi target ${rp(st.target)}. Putaran ini kalah.`):T(`Round over at ${rp(st.total)}. The target was ${rp(st.target)}.`,`Putaran selesai dengan total ${rp(st.total)}. Targetnya ${rp(st.target)}.`);sfx.bad()}record('fees',ok);el.next.hidden=false;el.next.textContent=st.round+1===TOTAL?T('See results','Lihat hasil'):T('Next round','Putaran berikutnya');el.next.focus()}
+  function finish(){el.play.hidden=true;el.end.hidden=false;setBest('budget',st.score);el.end.innerHTML=`<h3>${T('Budget Catch complete','Budget Catch selesai')}</h3><div class="big">${st.score}</div><p>${T(`Best ${S.best.budget} · Three exact budgets.`,`Rekor ${S.best.budget} · Tiga anggaran tepat.`)}</p><div class="row" style="justify-content:center;margin-top:18px"><button class="btn" data-again="budget">${T('Play again','Main lagi')}</button></div>`}
+  function aim(e){const r=el.cv.getBoundingClientRect();st.cartX=Math.max(BASKET_W/2,Math.min(W-BASKET_W/2,(e.clientX-r.left)*W/r.width))}
+  function update(dt){st.tick-=dt;if(st.queue.length&&st.tick<=0){st.items.push(st.queue.shift());st.tick=42}st.items.forEach(item=>item.y+=item.speed*dt);
+    for(let i=st.items.length-1;i>=0;i--){const item=st.items[i];if(item.y+24>=BASKET_Y-8&&item.y-24<=BASKET_Y+12&&Math.abs(item.x-st.cartX)<BASKET_W/2+38){st.items.splice(i,1);st.total+=item.price;st.caught++;el.total.textContent=rp(st.total);el.caught.textContent=st.caught;sfx.flap();if(st.total>st.target){endRound(false,true);return}if(st.total===st.target){endRound(true,false);return}}else if(item.y>H+30)st.items.splice(i,1)}
+    if(!st.queue.length&&!st.items.length)endRound(st.total===st.target,false)}
+  function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+  function draw(){ctx.clearRect(0,0,W,H);ctx.fillStyle=col.bg;ctx.fillRect(0,0,W,H);ctx.strokeStyle=col.line;ctx.lineWidth=2;ctx.setLineDash([10,14]);for(let x=0;x<W;x+=W/6){ctx.beginPath();ctx.moveTo(x,H*.2);ctx.lineTo(x,H);ctx.stroke()}ctx.setLineDash([]);
+    st.items.forEach(item=>{const bw=150,bh=74;roundRect(item.x-bw/2,item.y-bh/2,bw,bh,12);ctx.fillStyle=col.tag;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=col.ink;ctx.stroke();ctx.fillStyle=col.ink;ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='800 13px "Bricolage Grotesque",sans-serif';ctx.fillText(itemName(item.item),item.x,item.y-20,130);ctx.font='700 13px "Bricolage Grotesque",sans-serif';ctx.fillText(T(`${rp(item.sticker)} · ${item.pct}% off`,`${rp(item.sticker)} · diskon ${item.pct}%`),item.x,item.y+3,138);ctx.font='800 12px "Bricolage Grotesque",sans-serif';ctx.fillStyle=col.sale;ctx.fillText(T('Sale price hidden','Harga promo tersembunyi'),item.x,item.y+24,138)});
+    roundRect(st.cartX-BASKET_W/2,BASKET_Y-25,BASKET_W,48,12);ctx.fillStyle=col.mint;ctx.fill();ctx.lineWidth=3;ctx.strokeStyle=col.ink;ctx.stroke();ctx.fillStyle=col.ink;ctx.font='36px "Apple Color Emoji","Segoe UI Emoji",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🛒',st.cartX,BASKET_Y-2)}
+  function loop(ts){raf=requestAnimationFrame(loop);const dt=Math.min(2.5,(ts-last)/16.667||1);last=ts;if(st.mode==='play')update(dt);draw()}
+  el.cv.addEventListener('pointerdown',e=>{if(st.mode==='play'){e.preventDefault();aim(e)}});el.cv.addEventListener('pointermove',e=>{if(st.mode==='play'&&(e.buttons||e.pointerType==='touch'))aim(e)});
+  document.addEventListener('keydown',e=>{if(stage.hidden||activeGame!=='budget'||st.mode!=='play')return;if(['ArrowLeft','ArrowRight','KeyA','KeyD'].includes(e.code)){e.preventDefault();st.cartX=Math.max(BASKET_W/2,Math.min(W-BASKET_W/2,st.cartX+(e.code==='ArrowLeft'||e.code==='KeyA'?-48:48)))}});
+  el.next.addEventListener('click',()=>{st.round++;if(st.round>=TOTAL)finish();else{nextRound();el.ov.hidden=false;el.ov.innerHTML=`<h3>${T(`Round ${st.round+1}` ,`Putaran ${st.round+1}`)}</h3><p>${T('Catch the exact target total.','Tangkap barang hingga totalnya tepat sesuai target.')}</p><button class="btn" id="budgetResume">${T('Start round','Mulai putaran')}</button>`;$('#budgetResume').addEventListener('click',start)}});
+  return{open,stop}
+})();
+
+/* ---------- init ---------- */
+applyStaticLanguage();heroNew();calc();promo();fake();renderProgress();renderDaily();scheduleDailyRefresh();aiBadge();
+Mentor.setCase(G.stack(),T('Hi! I am your mentor. I check the numbers; you do the thinking. Solve this one, or switch topic.','Hai! Aku mentor Numerify. Aku memeriksa hitungannya, kamu yang berpikir. Jawab soal ini atau pilih topik lain.'));
+})();
+</script>
+</body>
+</html>
